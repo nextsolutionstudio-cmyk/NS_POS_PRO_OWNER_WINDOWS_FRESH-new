@@ -1,0 +1,16 @@
+NS POS PRO OWNER - WINDOWS EXE - FRESH GITHUB BUILD
+
+1. GitHub > New repository > enter name NS_POS_PRO_OWNER_WINDOWS_FRESH > Create repository.
+   Do not initialize with README, .gitignore or license.
+2. Extract THIS ZIP on your PC. Upload extracted FILES and FOLDERS, NOT THE ZIP.
+   IMPORTANT: .github/workflows/build-windows-exe.yml must exist at repository ROOT.
+   Top level must contain package.json, desktop/, app/, and .github/.
+3. Commit changes to main.
+4. GitHub > Actions > Build Owner Windows EXE > Run workflow.
+5. Open successful run > Artifacts > NS-POS-PRO-Owner-Windows.
+6. Extract artifact ZIP to get EXE files.
+
+Note: Actual EXE building occurs on GitHub Windows runner. This ZIP is SOURCE, not an EXE.
+If a run fails with 0s and no jobs, open repository > .github/workflows/build-windows-exe.yml and verify the contents were committed correctly. GitHub Actions access/settings may also need checking.
+
+IMPORTANT: The permanent delete feature erases customer records. First back up Cloudflare data and test only on a disposable test account. Android sources are unchanged.

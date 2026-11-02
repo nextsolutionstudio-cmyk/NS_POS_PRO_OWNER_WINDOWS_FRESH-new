@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/><title>NS POS PRO · Developer Owner v2.2</title><style>
+:root{font-family:Inter,Arial,sans-serif;color:#17243a;background:#f0f5fd}*{box-sizing:border-box}body{margin:0}header{padding:22px 5%;background:linear-gradient(110deg,#122c72,#704be9);color:#fff;display:flex;align-items:center;gap:13px}header b{font-size:22px}header span{font-size:12px;opacity:.85}main{max-width:1160px;margin:22px auto;padding:0 14px}.panel{background:#fff;border:1px solid #dae3f4;border-radius:16px;margin-bottom:18px;padding:20px;box-shadow:0 8px 23px #1a2f6010}h2{font-size:18px;margin:0 0 16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px}.field{display:flex;flex-direction:column;gap:5px;font-size:12px;color:#586780}input,select,textarea{border:1px solid #c7d5eb;border-radius:10px;padding:12px;font:inherit;color:#17243a;width:100%;min-width:0}button{cursor:pointer;border:0;border-radius:11px;padding:12px 16px;background:#285ee8;color:white;font-weight:700}button.secondary{background:#e9effd;color:#2751a7}button.reject{background:#d83954}button:disabled{opacity:.5}.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.item{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #eef2f8;padding:15px 0}.muted{font-size:12px;color:#6b7891}.status{font-weight:700;font-size:12px}.warn{color:#d36a00}.error{color:#dc3545}#msg{position:sticky;top:0;padding:9px;color:#fff;background:#1f3c74;display:none;z-index:5}#workspace{display:none}small{font-size:12px}img{max-width:100%;max-height:70vh}</style>
+<style id="ownerPremiumUI">
+:root{--deep:#081a4a;--muted:#a8b9e1;--border:#d9e4f6;font-family:Inter,system-ui,-apple-system,Arial,sans-serif}
+html{scroll-behavior:smooth}body{background:radial-gradient(circle at 90% -9%,#194bce 0,transparent 35%),linear-gradient(160deg,#07163e,#0c2052 60%,#09183e);min-height:100vh;color:#eaf2ff}
+.owner-header{position:sticky;z-index:9;top:0;display:flex;align-items:center;justify-content:space-between;padding:13px max(16px,calc((100vw - 1160px)/2 + 16px));background:linear-gradient(110deg,#06143bee,#133b94eb);backdrop-filter:blur(18px);border-bottom:1px solid #517bd544;box-shadow:0 12px 25px #030b2840;gap:10px}
+.owner-brand{display:flex;align-items:center;gap:12px}.owner-brand b{font-size:clamp(17px,4vw,24px);white-space:nowrap;letter-spacing:-.7px}.owner-brand b em{color:#ffd05d;font-style:normal}.owner-brand span{display:block;font-size:11px;color:#bfd0f4;letter-spacing:.3px}.owner-logo{width:57px;height:57px;border-radius:14px;object-fit:cover;max-height:57px;box-shadow:0 5px 12px #0004}.owner-header-actions{display:flex;align-items:center;gap:10px}.secure-owner{font-size:11px;color:#a5e4be}.owner-header #logout{padding:9px 12px;font-size:12px;border:1px solid #6692e2;background:#ffffff1b;color:#fff}
+main{max-width:1160px;margin:0 auto;padding:18px 14px 102px}#msg{border-radius:0 0 12px 12px;box-shadow:0 4px 20px #0006}
+.owner-intro{display:flex;align-items:center;justify-content:space-between;gap:16px;background:linear-gradient(125deg,#153f9c,#1c5bb2 50%,#1757ba);border:1px solid #7eb4ff59;border-radius:24px;padding:27px 25px;position:relative;overflow:hidden;box-shadow:0 18px 38px #00103640}.owner-intro:after{content:"";position:absolute;right:-50px;top:-130px;width:310px;height:310px;border-radius:50%;border:60px solid #42d8ff1b;pointer-events:none}.owner-intro .eyebrow{font-size:11px;color:#91eeff;font-weight:900;letter-spacing:2px}.owner-intro h1{font-size:clamp(20px,4vw,32px);margin:9px 0 8px;color:#fff;letter-spacing:-.7px}.owner-intro p{font-size:14px;color:#c8dcff;margin:0}.intro-symbol{font-size:65px;color:#8cf5ff;opacity:.8}
+.owner-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0 28px}.owner-kpi{text-align:left;display:grid;grid-template-columns:auto 1fr;align-items:center;gap:5px 12px;color:#fff;border:1px solid #ffffff30;border-radius:18px;padding:17px 15px;background:linear-gradient(135deg,#166fe6,#1140a7);box-shadow:0 10px 23px #00123866}.owner-kpi:nth-child(2){background:linear-gradient(135deg,#00ba8b,#057767)}.owner-kpi:nth-child(3){background:linear-gradient(135deg,#ffa617,#d65b09)}.owner-kpi:nth-child(4){background:linear-gradient(135deg,#ff4979,#ad1757)}.kpi-symbol{font-size:30px;grid-row:span 2}.kpi-count{font-size:26px;font-weight:900;font-variant-numeric:tabular-nums}.kpi-label{font-size:12px;color:#ffffffd6}
+.owner-section-head{display:flex;justify-content:space-between;align-items:center;margin:0 4px 14px}.owner-section-head h2{font-size:20px;margin:0;color:#fff}.owner-section-head span{font-size:12px;color:#a9c4ee}
+.owner-tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.owner-tile{position:relative;display:flex;align-items:flex-start;flex-direction:column;gap:6px;min-height:182px;text-align:left;padding:19px 18px 18px;border:1px solid #ffffff4b;border-radius:22px;color:white;isolation:isolate;overflow:hidden;box-shadow:0 12px 27px #0005;transition:transform .12s,filter .12s}.owner-tile:after{content:"";position:absolute;width:150px;height:150px;right:-80px;top:-90px;z-index:-1;border-radius:40%;border:35px solid #ffffff13;transform:rotate(28deg)}.owner-tile:active{transform:scale(.975)}.owner-tile:focus-visible,.owner-kpi:focus-visible,.owner-nav-button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.owner-tile.blue{background:linear-gradient(135deg,#1665ff,#119af5)}.owner-tile.green{background:linear-gradient(135deg,#02ae75,#0dd3a2)}.owner-tile.orange{background:linear-gradient(135deg,#ff9d12,#ff5c1f)}.owner-tile.purple{background:linear-gradient(135deg,#6931ed,#b356f3)}.owner-tile.pink{background:linear-gradient(135deg,#ff4273,#ed249b)}.owner-tile.cyan{background:linear-gradient(135deg,#00acba,#06c3d5)}.owner-tile.coral{background:linear-gradient(135deg,#f83c59,#fe6868)}.owner-tile.indigo{background:linear-gradient(135deg,#4443e5,#8c65f6)}
+.tile-icon{display:grid;place-items:center;width:61px;height:61px;font-size:30px;background:#ffffff2a;border:1px solid #ffffff45;border-radius:17px;margin-bottom:auto}.tile-title{font-size:18px;font-weight:900;line-height:1.1}.tile-sub{font-size:12px;color:#fffde9;opacity:.92;padding-right:22px}.tile-arrow{position:absolute;right:17px;bottom:17px;width:24px;height:24px;border:1px solid #ffffff70;border-radius:50%;display:grid;place-items:center;font-size:25px;line-height:15px;background:#ffffff28}
+.owner-safe-note{margin:24px 0 14px;font-size:12px;color:#bad0f3;text-align:center}.owner-view-heading{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0 16px}.owner-view-heading h1{font-size:21px;margin:0;color:white}.owner-view-heading span{color:#abc8fc;font-size:12px}.owner-back{background:#ffffff20;color:#f1f6ff;border:1px solid #7da5ec75;padding:11px 13px}
+.owner-detail-panel{display:none;color:#17243a}.owner-detail-panel h2{color:#15233e}.owner-detail-panel .field{color:#51647e}.owner-detail-panel input,.owner-detail-panel select,.owner-detail-panel textarea{background:#fff;color:#17243a}.owner-detail-panel .item{color:#17243a}.owner-detail-panel .muted{color:#667992}.owner-detail-panel button{white-space:normal}
+#login{max-width:600px;margin:7vh auto 0;color:#15233e}.panel{border-radius:20px;box-shadow:0 16px 35px #020b2230}.owner-bottom-nav{position:fixed;z-index:11;bottom:0;left:0;right:0;margin:auto;max-width:1160px;padding:9px max(8px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));display:flex;justify-content:space-around;gap:4px;background:linear-gradient(100deg,#091d55f7,#103b81f7);border:1px solid #75acff44;border-bottom:0;border-radius:20px 20px 0 0;box-shadow:0 -10px 30px #010817bb;backdrop-filter:blur(15px)}.owner-nav-button{background:transparent;display:flex;flex-direction:column;gap:2px;justify-content:center;align-items:center;padding:5px 6px;min-width:52px;color:#c2d6f9;font-size:10px;font-weight:700;border-radius:13px}.owner-nav-button .owner-nav-icon{font-size:24px;line-height:1.3}.owner-nav-button.selected{color:#fff;background:#2272fb66}.owner-nav-button.selected .owner-nav-icon{filter:drop-shadow(0 1px 5px #3fdfff)}
+@media(max-width:810px){.owner-tile-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.owner-tile{min-height:168px;padding:16px 14px}.owner-kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.owner-kpi{padding:12px}.kpi-count{font-size:22px}.tile-icon{width:55px;height:55px}.owner-intro{padding:24px 19px}.owner-intro .intro-symbol{font-size:40px}.secure-owner{display:none}main{padding:13px 12px 100px}}
+@media(max-width:380px){.owner-brand b{font-size:16px}.owner-logo{width:47px;height:47px}.tile-title{font-size:16px}.tile-sub{font-size:11px}.owner-nav-button{font-size:9px;padding:5px 3px;min-width:45px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.owner-tile{transition:none}}
+
+.toggle-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.toggle-grid label{display:flex;gap:9px;align-items:center;padding:11px 12px;border-radius:12px;background:#f0f5fd;border:1px solid #dce6f5;color:#23385b;font-weight:650;font-size:13px}.toggle-grid input{width:auto;accent-color:#2563eb}.owner-detail-panel h3{margin:21px 0 10px;font-size:17px}.report-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:14px 0}.stat-box{display:flex;flex-direction:column;gap:3px;border-radius:15px;background:linear-gradient(130deg,#163eaa,#177ae1);padding:18px;color:#fff}.stat-box strong{font-size:22px}.stat-box span{font-size:12px}.owner-detail-panel .field{min-width:0} @media(max-width:430px){.toggle-grid{grid-template-columns:1fr}.report-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+<style>.ns-feature-group{border:1px solid #d8e3f2;border-radius:14px;padding:10px 12px;margin:9px 0;background:#f7faff;color:#183459}.ns-feature-group summary{font-weight:850;cursor:pointer;padding:9px 3px}.ns-feature-group .toggle-grid{padding:8px 3px}.ns-feature-group label{display:flex;align-items:center;gap:7px;min-height:35px}.ns-feature-group input{width:19px;height:19px;flex-shrink:0}</style><style id="ownerLoginPremium2026">
+
+/* Premium password-first Owner Login. Only the owner email is remembered; NEVER store the password. */
+body.owner-login-state{background:#071a42;color:#172f53}
+.owner-login-account[hidden],#ownerEmailInputBlock[hidden]{display:none!important}
+body.owner-login-state .owner-header{display:none}
+body.owner-login-state main{margin:0;padding:0;max-width:none;min-height:100vh}
+body.owner-login-state #msg{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(530px,calc(100% - 28px));z-index:99;border-radius:12px}
+#login.owner-login-layout{margin:0;max-width:none;border:0;border-radius:0;background:transparent;box-shadow:none;padding:0;overflow:hidden}
+.owner-login-shell{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(380px,.86fr);min-height:100vh;width:100%}
+.owner-login-promo{position:relative;min-height:620px;background:linear-gradient(145deg,#061439,#064ba8);overflow:hidden}
+.owner-login-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center center;max-height:none}
+.owner-login-promo:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(2,17,47,.84),transparent 29%);pointer-events:none}
+.owner-login-promo-caption{position:absolute;bottom:28px;left:36px;right:34px;color:#f3faff;font-size:12px;letter-spacing:.2px;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:9px}
+.owner-login-promo-caption strong{display:inline-flex;align-items:center;padding:9px 13px;background:#0b347aa6;border:1px solid #3bb8ff7b;border-radius:100px;color:#7ee9ff;letter-spacing:1.2px;font-size:11px}
+.owner-login-right{background:radial-gradient(circle at 90% 2%,#c1dfff,transparent 42%),linear-gradient(150deg,#f6faff,#e7f2ff);padding:36px clamp(24px,3vw,52px);display:flex;align-items:center;justify-content:center;min-width:0}
+.owner-login-card{width:100%;max-width:472px;color:#173052}
+.owner-login-mark{display:flex;align-items:center;gap:12px;margin-bottom:35px;color:#244570;font-size:12px;font-weight:850;letter-spacing:1.6px}
+.owner-login-badge{width:61px;height:61px;border-radius:19px;display:grid;place-items:center;background:linear-gradient(125deg,#0b65fb,#05c5e8);color:#fff;font-size:30px;box-shadow:0 14px 30px #0a74e43a}
+.owner-login-eyebrow{display:inline-flex;gap:7px;align-items:center;background:#dfedff;color:#1766ad;border:1px solid #cce1ff;border-radius:100px;font-size:11px;font-weight:850;letter-spacing:1.2px;padding:7px 12px}
+.owner-login-card h1{font-size:clamp(31px,3.5vw,46px);line-height:1.04;letter-spacing:-1.6px;color:#08244b;margin:19px 0 10px;font-weight:950}
+.owner-login-card .owner-login-intro{color:#56708f;font-size:14px;line-height:1.7;margin:0 0 25px}
+.owner-login-card .owner-login-field{color:#243c62;display:block;font-size:13px;font-weight:800;line-height:1.5;margin:15px 0 7px}
+.owner-login-card input{width:100%;background:#fff;border:1px solid #c8daf1;height:54px;border-radius:14px;padding:12px 15px;font-size:15px;color:#0b2b57;box-shadow:0 6px 16px #0a38710d}
+.owner-login-card input:focus{outline:none;border-color:#1685fb;box-shadow:0 0 0 4px #1685fb2e}
+.owner-login-account{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1px solid #d4e2f6;padding:12px 13px;border-radius:15px;margin:6px 0 14px}
+.owner-login-account-icon{display:grid;place-items:center;width:37px;height:37px;background:#e1f1ff;border-radius:12px;color:#1678cf;font-size:21px;flex:none}
+.owner-login-account-info{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.owner-login-account-info span{font-size:11px;color:#6780a0}
+.owner-login-account-info strong{overflow-wrap:anywhere;color:#153e76;font-size:13px}
+.owner-login-change{font-size:12px;color:#1365b8;background:#eaf3ff;border:1px solid #ccdcf2;padding:9px 11px;border-radius:10px;flex:none}
+.owner-login-input-wrap{position:relative}.owner-login-input-wrap input{padding-right:65px}
+.owner-login-show{position:absolute;right:9px;top:8px;height:38px;font-size:12px;background:#edf4ff;color:#1b5798;border:0;border-radius:10px;padding:7px 10px}
+.owner-login-submit{display:flex;justify-content:center;align-items:center;gap:12px;width:100%;min-height:56px;font-size:16px;margin:21px 0 0;border-radius:14px;background:linear-gradient(110deg,#1454e8,#05bce9);box-shadow:0 15px 26px #1566df34;font-weight:900}
+.owner-login-submit:disabled{opacity:.65;cursor:progress}
+.owner-login-tools{margin-top:15px}.owner-login-tools summary{cursor:pointer;color:#5b7899;font-size:12px;font-weight:750;width:max-content}.owner-login-tools .owner-login-api{margin:11px 0 4px}.owner-login-tools input{font-size:12px;height:45px}
+.owner-login-secure{display:flex;align-items:flex-start;gap:12px;margin-top:28px;padding:17px;background:#e4f0ff;border:1px solid #cbdef8;border-radius:16px;color:#486889;font-size:12px;line-height:1.6}.owner-login-secure span{font-size:22px}
+.owner-login-footer{margin-top:26px;border-top:1px solid #cbdcf1;padding-top:17px;display:flex;justify-content:space-between;gap:12px;color:#7187a6;font-size:11px}
+@media(max-width:950px){.owner-login-shell{grid-template-columns:minmax(0,1.05fr) minmax(350px,1fr)}.owner-login-promo-caption{left:18px;right:18px;font-size:11px}}
+@media(max-width:740px){.owner-login-shell{display:flex;flex-direction:column}.owner-login-promo{height:270px;min-height:270px}.owner-login-photo{object-position:center 43%}.owner-login-promo-caption{bottom:12px;left:17px;right:17px}.owner-login-promo-caption .owner-login-caption-copy{display:none}.owner-login-right{padding:28px 21px 38px;flex:1}.owner-login-mark{margin-bottom:20px}.owner-login-card h1{font-size:33px}.owner-login-card .owner-login-intro{margin-bottom:16px}}
+@media(max-width:420px){.owner-login-promo{height:215px;min-height:215px}.owner-login-right{padding:22px 18px 32px}.owner-login-badge{width:53px;height:53px}.owner-login-secure{padding:13px}.owner-login-card h1{font-size:30px}}
+@media(prefers-reduced-motion:reduce){.owner-login-submit{transition:none}}
+
+</style></head><body class="owner-login-state"><header class="owner-header">
+<div class="owner-brand"><img alt="NS OWNER logo" class="owner-logo" src="data:image/png;base64,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"/><div><b>NS <em>OWNER</em></b><span>Developer Control Center</span></div></div>
+<div class="owner-header-actions"><span class="secure-owner">● Secure Owner</span><button class="secondary" id="logout" onclick="logout()" style="display:none">Log out</button></div>
+</header><div id="msg"></div><main>
+<section class="panel owner-login-layout" id="login" aria-label="Developer Owner sign in">
+  <div class="owner-login-shell">
+    <div class="owner-login-promo">
+      <img class="owner-login-photo" src="owner_login_hero.jpg" alt="NS POS PRO Next Solution Studio desktop welcome artwork"/>
+      <div class="owner-login-promo-caption"><strong>◈ &nbsp; DEVELOPER OWNER</strong><span class="owner-login-caption-copy">Your cloud business control center</span></div>
+    </div>
+    <div class="owner-login-right"><div class="owner-login-card">
+      <div class="owner-login-mark"><span class="owner-login-badge" aria-hidden="true">✦</span> NS POS PRO &nbsp; / &nbsp; OWNER</div>
+      <span class="owner-login-eyebrow">● &nbsp; SECURE CLOUD ACCESS</span>
+      <h1>Welcome back.</h1>
+      <p class="owner-login-intro">Sign in to your Developer Control Center. On this device, your email is remembered after the first successful sign-in.</p>
+      <form id="ownerLoginForm" onsubmit="event.preventDefault();login()">
+        <div id="ownerSavedAccount" class="owner-login-account" hidden>
+          <span class="owner-login-account-icon" aria-hidden="true">♙</span>
+          <div class="owner-login-account-info"><span>Owner account</span><strong id="ownerRememberedEmail"></strong></div>
+          <button class="owner-login-change" type="button" onclick="changeOwnerEmail()">Change</button>
+        </div>
+        <div id="ownerEmailInputBlock">
+          <label class="owner-login-field" for="email">Owner Email</label>
+          <input autocomplete="username" id="email" type="email" maxlength="254" placeholder="Enter owner email" required/>
+        </div>
+        <label class="owner-login-field" for="password">Owner Password</label>
+        <div class="owner-login-input-wrap"><input autocomplete="current-password" id="password" type="password" minlength="12" placeholder="Enter your password" required/><button id="ownerTogglePassword" type="button" class="owner-login-show" onclick="toggleOwnerPassword()" aria-label="Show password">Show</button></div>
+        <button id="ownerLoginButton" type="submit" class="owner-login-submit">Sign In Securely <span aria-hidden="true">➜</span></button>
+      </form>
+      <details class="owner-login-tools"><summary>Server settings</summary><div class="owner-login-api"><label class="owner-login-field" for="api">Cloudflare API URL</label><input autocomplete="url" id="api" placeholder="https://ns-pos-pro-cloud.yourname.workers.dev"/></div></details>
+      <div class="owner-login-secure"><span aria-hidden="true">🔒</span><div>Only your email is remembered on this device. Your password is never saved. Developer Owner access is checked by Cloudflare on every login.</div></div>
+      <div class="owner-login-footer"><span>© Developed by Next Solution Studio</span><span>Owner Control Center</span></div>
+    </div></div>
+  </div>
+</section>
+<div id="workspace">
+<section aria-label="Owner dashboard" class="owner-dashboard" id="ownerDashboard">
+<div class="owner-intro"><div><span class="eyebrow">YOUR CONTROL CENTER</span><h1>Manage your business network</h1><p>Every important function, one simple tap away.</p></div><div class="intro-symbol">✦</div></div>
+<div aria-label="Live customer overview" class="owner-kpis">
+<button class="owner-kpi" onclick="showOwnerSection('businesses')" type="button"><span class="kpi-symbol">👥</span><span class="kpi-count" id="ownerTotal">—</span><span class="kpi-label">Customers</span></button>
+<button class="owner-kpi" onclick="showOwnerSection('businesses')" type="button"><span class="kpi-symbol">✅</span><span class="kpi-count" id="ownerActive">—</span><span class="kpi-label">Current</span></button>
+<button class="owner-kpi" onclick="showOwnerSection('subscriptions')" type="button"><span class="kpi-symbol">⏳</span><span class="kpi-count" id="ownerExpiring">—</span><span class="kpi-label">Expiring</span></button>
+<button class="owner-kpi" onclick="showOwnerSection('businesses')" type="button"><span class="kpi-symbol">🔒</span><span class="kpi-count" id="ownerBlocked">—</span><span class="kpi-label">Blocked</span></button>
+</div>
+<div class="owner-section-head"><h2>Quick access</h2><span>Choose a service</span></div>
+<div aria-label="Management features" class="owner-tile-grid" role="group">
+<button class="owner-tile blue" onclick="showOwnerSection('businesses')" type="button"><span class="tile-icon">👥</span><span class="tile-title">Customers</span><span class="tile-sub">Search &amp; manage</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile green" onclick="showOwnerSection('add')" type="button"><span class="tile-icon">➕</span><span class="tile-title">Add Customer</span><span class="tile-sub">New business account</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile violet" onclick="showOwnerSection('users')" type="button"><span class="tile-icon">👥</span><span class="tile-title">Staff & Roles</span><span class="tile-sub">Accounts · Access · Custom jobs</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile orange" onclick="showOwnerSection('subscriptions')" type="button"><span class="tile-icon">📅</span><span class="tile-title">Subscriptions</span><span class="tile-sub">Expiry &amp; extend</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile purple" onclick="showOwnerSection('branding')" type="button"><span class="tile-icon">🎨</span><span class="tile-title">Business Branding</span><span class="tile-sub">Logo, details &amp; bill</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile pink" onclick="showOwnerSection('payments')" type="button"><span class="tile-icon">💳</span><span class="tile-title">Payments</span><span class="tile-sub">Transfer requests</span><span class="tile-arrow">›</span></button>
+
+
+<button class="owner-tile orange" onclick="showOwnerSection('globalSeasonal')" type="button"><span class="tile-icon">🌸</span><span class="tile-title">Global Festivals</span><span class="tile-sub">Every Customer App · No selection</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile green" onclick="showOwnerSection('remoteControl')" type="button"><span class="tile-icon">🎛️</span><span class="tile-title">Full App Control</span><span class="tile-sub">Hide / Show any customer module</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile cyan" onclick="showOwnerSection('devices')" type="button"><span class="tile-icon">🖨️</span><span class="tile-title">Device &amp; Printer</span><span class="tile-sub">Connections &amp; remote preferences</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile orange" onclick="showOwnerSection('updateCenter')" type="button"><span class="tile-icon">🚀</span><span class="tile-title">Update Center</span><span class="tile-sub">Android &amp; Windows releases</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile purple" onclick="showOwnerSection('settingsBackup')" type="button"><span class="tile-icon">🗂️</span><span class="tile-title">Backup &amp; Restore</span><span class="tile-sub">Settings version history</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile cyan" onclick="showOwnerSection('backupCenter')" type="button"><span class="tile-icon">💾</span><span class="tile-title">Daily Backup Center</span><span class="tile-sub">Customer-named PC download · ON/OFF</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile pink" onclick="showOwnerSection('ownerReports')" type="button"><span class="tile-icon">📊</span><span class="tile-title">Reports &amp; Audit</span><span class="tile-sub">Subscriptions &amp; changes</span><span class="tile-arrow">›</span></button>
+<button class="owner-tile coral" onclick="showOwnerSection('support')" type="button"><span class="tile-icon">🧰</span><span class="tile-title">Remote Support</span><span class="tile-sub">Diagnose issues safely</span><span class="tile-arrow">›</span></button>
+</div><div class="owner-safe-note">🔐 Owner-only controls. Changes to customer accounts and subscriptions require your secure Cloudflare login.</div>
+</section>
+<div class="owner-view-heading" id="ownerViewHeading" style="display:none"><button class="owner-back" onclick="showOwnerSection('dashboard')" type="button">‹ Dashboard</button><h1 id="ownerViewTitle">Manage</h1><span id="ownerViewSubtitle"></span></div>
+<div class="panel owner-detail-panel" id="ownerAdd"><h2>➕ Add New Customer / Business</h2><div class="grid"><label class="field">Business Code<input id="businessCode" placeholder="EXAMPLE_SHOP"/></label><label class="field">Business Name<input id="businessName" placeholder="Shop or company name"/></label></div><div class="row" style="margin-top:12px"><button onclick="createTenant()">Create Business (30 days)</button></div></div>
+<div class="panel owner-detail-panel" id="ownerBusinesses"><h2>Businesses &amp; Subscriptions</h2>
+<p class="muted">Permanently remove unused test customers and their cloud records. Deletion cannot be undone; verify each business ID before deleting.</p>
+<div class="grid" style="margin-bottom:12px">
+<label class="field">Search customer / business code<input id="tenantSearch" oninput="tenantPage=0;renderTenantList()" placeholder="Type customer name or code" type="search"/></label>
+<label class="field">Show accounts<select id="tenantTypeFilter" onchange="tenantPage=0;renderTenantList()"><option value="current">Current accounts</option><option value="archived">Archived accounts</option><option value="all">All accounts</option></select></label>
+<label class="field">Accounts per page<select id="tenantPageSize" onchange="tenantPage=0;renderTenantList()"><option value="8">8</option><option value="15">15</option><option value="30">30</option></select></label>
+</div>
+<div class="row" style="margin-bottom:12px"><span class="muted" id="tenantSummary"></span><button class="secondary" onclick="document.getElementById('tenantSearch').value='';tenantPage=0;renderTenantList()" type="button">Clear Search</button></div>
+<div class="row" id="archiveTools" style="margin-bottom:10px"><label style="display:flex;align-items:center;gap:7px"><input id="selectAllBusiness" onchange="toggleAllBusinesses(this.checked)" style="width:auto" type="checkbox"/> Select only this page</label><span class="muted" id="selectedBusinessCount">0 selected</span><button class="reject" onclick="deleteSelectedBusinesses()" type="button">Delete Selected Permanently</button></div>
+<div id="tenants"></div>
+<div class="row" style="margin-top:12px;justify-content:space-between"><button class="secondary" id="tenantPrev" onclick="tenantPage=Math.max(0,tenantPage-1);renderTenantList()" type="button">Previous</button><span class="muted" id="tenantPageLabel"></span><button class="secondary" id="tenantNext" onclick="tenantPage++;renderTenantList()" type="button">Next</button></div>
+<p class="muted" style="margin-top:12px">⚠ Delete only verified TEST businesses. Permanent delete also removes their linked users and cloud records. Backup the database first. Live customer accounts must not be selected.</p></div>
+<div class="panel owner-detail-panel" id="ownerUsers"><div class="row"><button class="secondary" type="button" onclick="showOwnerSection('customerAdmins')">Manage Existing Staff</button><button class="secondary" type="button" onclick="showOwnerSection('remoteControl')">Custom Job Roles</button></div><h2>Staff Cloud Login · Admin / HR / Cashier / Rep</h2><p class="muted">HR/Cashier permissions must also be enforced by the Cloudflare backend before staff accounts are activated.</p><div class="grid"><label class="field">Business Code<input id="uBusiness" placeholder="EXAMPLE_SHOP"/></label><label class="field">Email<input id="uEmail" type="email"/></label><label class="field">Temporary Password (12+ characters)<input autocomplete="new-password" id="uPassword" type="password"/></label><label class="field">Access Role<select id="uRole"><option value="admin">Business Admin</option><option value="rep">Sales Rep</option><option value="hr">HR / Payroll (separate)</option><option value="cashier">Cashier (Shop Billing)</option></select></label></div><div class="row" style="margin-top:12px"><button onclick="createUser()">Create Login</button></div></div>
+<div class="panel owner-detail-panel" id="ownerBrandingPanel"><h2>🎨 Remote Branding · Customer POS</h2>
+<p class="muted">Only the Developer Owner can publish. Choose the business, Load its settings, edit and Publish. This changes branding for that business without touching bills, GRNs, stock or subscriptions.</p>
+<div class="grid"><label class="field">Select Customer Business<select id="brBusiness"><option value="">Choose business...</option></select></label><label class="field">Business name *<input id="brName" maxlength="100"/></label>
+<label class="field">Phone number 1<input id="brPhone" maxlength="40" placeholder="07XXXXXXXX" type="tel"/></label><label class="field">Phone number 2<input id="brPhone2" maxlength="40" placeholder="07XXXXXXXX" type="tel"/></label>
+<label class="field">Email address<input id="brEmail" maxlength="150" type="email"/></label><label class="field">Website (www. address)<input id="brWebsite" maxlength="200" placeholder="www.example.lk" type="text"/></label><label class="field">Business address<textarea id="brAddress" maxlength="300" rows="2"></textarea></label>
+<label class="field">Upload Business logo (PNG, JPG, WebP)<input accept="image/png,image/jpeg,image/webp" id="brLogoFile" onchange="ownerBrandLogoChanged(this)" type="file"/></label></div>
+<div style="margin-top:12px"><img alt="Brand logo preview" id="brLogoPreview" style="max-width:145px;max-height:120px;display:none;object-fit:contain"/></div>
+<div class="row" style="margin-top:12px"><button class="secondary" onclick="loadOwnerBranding()" type="button">Load from Cloud</button><button class="secondary" onclick="removeOwnerBrandLogo()" type="button">Remove Logo</button><button id="brPublish" onclick="publishOwnerBranding()" type="button">Publish to Customer POS</button></div>
+<p aria-live="polite" class="muted" id="brStatus" role="status" style="white-space:pre-line">Select a business and Load from Cloud before publishing.</p>
+<div id="ownerLoginArtPanel" style="margin-top:22px;padding-top:16px;border-top:1px solid #d9e4f5">
+<h2>🖼 Windows Login Screen Photo · Developer Owner Only</h2>
+<p class="muted">Select the customer business under Business Branding. Upload a photo that suits that business. Customers cannot change this photo. Existing login screens display their default picture until the first successful cloud sync.</p>
+<div class="grid"><label class="field">Login Picture (JPG/PNG/WebP)<input id="ownerLoginArtFile" type="file" accept="image/jpeg,image/png,image/webp" onchange="ownerLoginArtFileChanged(this)"></label></div>
+<img id="ownerLoginArtPreview" alt="Business login photo preview" style="display:none;width:min(100%,430px);margin:12px 0;border-radius:12px;object-fit:cover;aspect-ratio:1.65">
+<div class="row"><button type="button" class="secondary" onclick="loadOwnerLoginArt()">Load Saved Photo</button><button type="button" onclick="publishOwnerLoginArt()">Publish Photo to Selected Business</button><button type="button" class="reject" onclick="removeOwnerLoginArt()">Restore Default Photo</button></div>
+<p id="ownerLoginArtStatus" class="muted" role="status">Choose a business in Business Branding first.</p>
+</div>
+</div>
+<div class="panel owner-detail-panel" id="seasonPanel"><h2>🎄 Festival Theme &amp; Seasonal Effects (Owner Controlled)</h2><p class="muted">Set a harmless decorative theme for one business at a time. Customer POS syncs while online; motion-reduction settings are respected. Confirm customer/business permission before publishing.</p><div class="grid"><label class="field">Show effects<select id="fxEnabled"><option value="false">OFF</option><option value="true">ON</option></select></label><label class="field">Theme<select id="fxEffect"><option value="none">None</option><option value="snow">Snowfall ❄</option><option value="christmas">Christmas 🎄</option><option value="vesak">Vesak ✨</option><option value="new_year">New Year 🎉</option><option value="aurudu">Sinhala &amp; Tamil New Year · Kevum / Kokis 🌸</option></select></label><label class="field">Start date (optional)<input id="fxStart" type="date"/></label><label class="field">End date (optional)<input id="fxEnd" type="date"/></label><label class="field">Effect quantity<input id="fxDensity" max="40" min="10" oninput="document.getElementById('fxDensityValue').textContent=this.value+' decorative particles'" type="range" value="20"/><span id="fxDensityValue">20 decorative particles</span></label></div><p class="muted">Load selected business from Cloud first. Publish button below saves both branding and effect settings.</p><div class="row"><button class="secondary" onclick="previewEffect()" type="button">Preview here</button><button class="secondary" onclick="clearEffectPreview()" type="button">Stop preview</button><button onclick="publishOwnerBranding()" type="button">Publish Theme + Branding</button></div></div>
+<div class="panel owner-detail-panel" id="globalSeasonPanel">
+<h2>🌸 Global Festival Theme — ALL Customer Accounts</h2>
+<p class="muted">No customer selection needed. Publish affects seasonal decorations ONLY across all eligible connected Customer POS accounts, including accounts added later. Branding, billing, printer, stock and subscription settings remain unchanged. Customer apps require this updated version and Cloudflare global API routes.</p>
+<div class="grid">
+ <label class="field">Effects for ALL Customers<select id="globalFxEnabled"><option value="true">ON — show festival theme</option><option value="false">OFF — stop effects for everyone</option></select></label>
+ <label class="field">Festival<select id="globalFxEffect"><option value="aurudu">Sinhala &amp; Tamil New Year 🌸 කැවුම් · කොකිස්</option><option value="snow">Snowfall ❄</option><option value="christmas">Christmas 🎄</option><option value="vesak">Vesak 🪷</option><option value="new_year">New Year confetti 🎉</option><option value="none">None</option></select></label>
+ <label class="field">Start date (optional)<input id="globalFxStart" type="date"></label>
+ <label class="field">End date (optional)<input id="globalFxEnd" type="date"></label>
+ <label class="field">Quantity<input id="globalFxDensity" type="range" min="10" max="40" value="20"><span id="globalFxDensityText">20 decorative particles</span></label>
+</div>
+<p id="globalFxStatus" class="muted" role="status">Press Load Global Settings before publishing. No business/account selection required.</p>
+<div class="row"><button type="button" class="secondary" onclick="loadGlobalSeasonal()">↻ Load Global Settings</button><button type="button" class="secondary" onclick="previewGlobalSeasonal()">👁 Preview Here</button><button type="button" class="secondary" onclick="clearEffectPreview()">Stop Preview</button><button id="globalFxPublish" type="button" onclick="publishGlobalSeasonal()" disabled>🌍 Publish to ALL Customers</button><button id="globalFxStop" class="reject" type="button" onclick="stopGlobalSeasonal()" disabled>Stop for ALL</button></div>
+</div>
+<div class="panel owner-detail-panel" id="subscriptionPanel"><h2>📆 Extend Customer Subscription</h2><p class="muted">Choose a customer business and add extra days. Only owner session can perform this action. Does not delete customer data.</p><div class="grid"><label class="field">Business<select id="subBusiness"><option value="">Choose business...</option></select></label><label class="field">Extension<select id="subDays" onchange="document.getElementById('subCustomDays').disabled=this.value!=='custom'"><option value="7">7 days</option><option selected="" value="30">30 days</option><option value="90">90 days</option><option value="180">180 days</option><option value="365">1 year (365 days)</option><option value="custom">Custom days</option></select></label><label class="field">Custom days (1–3650)<input disabled="" id="subCustomDays" max="3650" min="1" placeholder="e.g. 45" type="number"/></label></div><p aria-live="polite" class="muted" id="subStatus" role="status">Select a business and extension period.</p><div class="row"><button onclick="extendSelectedSubscription()">Confirm &amp; Extend Subscription</button></div></div>
+<div class="panel owner-detail-panel" id="ownerPayments"><h2>Payment Requests · Custom Fees / 30 Days</h2><p class="muted">Check the bank transfer and slip yourself before approving. Approval extends from the later of now or the current expiry date.</p><div class="row" style="margin-bottom:12px;gap:8px">
+<button class="secondary" onclick="refresh()" type="button">Refresh Requests</button>
+<button class="secondary" onclick="exportPaymentSummary()" type="button">⬇ Export Payment List</button>
+<button class="secondary" onclick="checkOwnerPaymentDeleteApi()" type="button">✓ Check Cloud Payment Delete API</button>
+<button class="reject" onclick="deleteSelectedTestPayments()" type="button">🗑 Delete Selected</button>
+<button class="reject" onclick="clearAllTestPayments()" type="button">⚠ Clear ALL Test Payments</button>
+</div>
+<p class="muted" id="paymentsSummary" role="status">Select test payment records. This does not delete customers or reverse subscription extensions.</p>
+<div id="payments"></div></div>
+<div class="panel owner-detail-panel" id="ownerCustomerAdmins"><h2>👥 Customer Admin / User Management</h2><p class="muted">Owner only · Select a business to manage accounts. Remove disables login and preserves historical records.</p><div class="row"><label class="field" style="flex:1;min-width:180px">Business Code<input id="manageBusiness" placeholder="e.g. SOP05"/></label><button class="secondary" onclick="loadManagedUsers()">Load Users</button><button class="reject" onclick="logoutManagedBusiness()">Logout All Devices</button></div><div id="managedUsers" style="margin-top:12px"></div></div>
+<div class="panel owner-detail-panel" id="ownerRemoteControl">
+<h2>🎛️ Full App Control · Customer Android &amp; Windows</h2><p class="muted">Choose a business, Load from Cloud, toggle what this customer can see, and Publish. Hidden items preserve all existing records. Settings / Backup remain available for safety.</p>
+<div class="grid"><label class="field">Business<select class="controlBusiness" id="controlBusiness"><option value="">Choose business...</option></select></label><label class="field">Business Name / Edit Customer<input id="ownerBusinessName" placeholder="Load business first" maxlength="100"></label></div>
+<div class="row" style="margin-top:12px"><button class="secondary" onclick="loadFullControl()">Load from Cloud</button><button class="secondary" onclick="saveBusinessName()">Update Business Name</button><span id="controlRev" class="muted">Not loaded</span></div>
+<h3>📱 Full App Modules · Show / Hide</h3><div class="row" style="margin:12px 0"><button class="secondary" type="button" onclick="ownerFeaturePreset('all')">✓ Show All</button><button class="secondary" type="button" onclick="ownerFeaturePreset('small')">Small Shop</button><button class="secondary" type="button" onclick="ownerFeaturePreset('supermarket')">Supermarket</button><button class="secondary" type="button" onclick="ownerFeaturePreset('restaurant')">Restaurant</button><button class="secondary" type="button" onclick="ownerFeaturePreset('wholesale')">Wholesale</button></div><div id="moduleToggles" class="ns-module-groups"><details class="ns-feature-group" open><summary>Core sales</summary><div class="toggle-grid"><label><input type="checkbox" data-feature="billing" checked> New Bill / POS Billing</label><label><input type="checkbox" data-feature="cashier" checked> Touch Cashier Screen</label><label><input type="checkbox" data-feature="history" checked> Bill History / Reprint</label><label><input type="checkbox" data-feature="returns" checked> Returns & Exchanges</label><label><input type="checkbox" data-feature="orders" checked> Customer Orders</label><label><input type="checkbox" data-feature="price_check" checked> Price Check / Barcode</label></div></details><details class="ns-feature-group" open><summary>Stock and products</summary><div class="toggle-grid"><label><input type="checkbox" data-feature="products" checked> Products & Prices</label><label><input type="checkbox" data-feature="grn" checked> GRN / Purchase Entry</label><label><input type="checkbox" data-feature="inventory" checked> Stock & Low Stock</label><label><input type="checkbox" data-feature="wholesale" checked> Wholesale Stock</label><label><input type="checkbox" data-feature="delivery" checked> Delivery Stock</label><label><input type="checkbox" data-feature="vehicle_stock" checked> Vehicle Stock</label></div></details><details class="ns-feature-group" open><summary>Customers and accounts</summary><div class="toggle-grid"><label><input type="checkbox" data-feature="customer_credit" checked> Customer Credit / Collections</label><label><input type="checkbox" data-feature="loyalty" checked> Loyalty Points</label><label><input type="checkbox" data-feature="shops" checked> Shops / Customer Map</label><label><input type="checkbox" data-feature="suppliers" checked> Suppliers</label><label><input type="checkbox" data-feature="cheques" checked> Cheque Payments</label></div></details><details class="ns-feature-group" open><summary>Staff and management</summary><div class="toggle-grid"><label><input type="checkbox" data-feature="rep_accounts" checked> Sales Reps</label><label><input type="checkbox" data-feature="shifts" checked> Cashier / Rep Shifts</label><label><input type="checkbox" data-feature="hr_payroll" checked> HR & Payroll</label><label><input type="checkbox" data-feature="expenses" checked> Expenses & Wastage</label><label><input type="checkbox" data-feature="accounts_profit" checked> Accounts & Profit</label><label><input type="checkbox" data-feature="reports" checked> Reports & Dashboards</label></div></details><details class="ns-feature-group" open><summary>Documents and settings</summary><div class="toggle-grid"><label><input type="checkbox" data-feature="documents" checked> Document Center</label><label><input type="checkbox" data-feature="printer_settings" checked> Printer Setup & Test</label><label><input type="checkbox" data-feature="branding_settings" checked> Business Details & Branding</label></div></details></div><p class="muted" style="margin:8px 0 16px">☑ = Show in Customer App. Uncheck = Hide. Changes do not delete invoices, stock, users or payments. Modules unavailable in a specific App version are ignored.</p><label style="display:flex;gap:9px;align-items:center"><input type="checkbox" id="controlApplyAll" style="width:20px"> <strong>Apply selected visibility to ALL active Customer accounts</strong> (requires typing a confirmation)</label><p class="muted">Leave unticked to change only the selected business. Bulk apply updates all supported Customer accounts individually; failures are reported, not silently skipped.</p><h3>🌍 Remote Tools · Add without Customer APK</h3>
+<p class="muted">Add a safe HTTPS web page/WhatsApp Business link. You can choose which staff roles see it. Links open outside the POS, never run downloaded JavaScript inside the app. Native features require a signed APK/EXE update.</p>
+<div class="grid"><label class="field">Tool name<input id="nsToolName" maxlength="55" placeholder="e.g. WhatsApp Orders"/></label><label class="field">Secure HTTPS Link<input id="nsToolURL" type="url" maxlength="450" placeholder="https://example.com/orders"/></label>
+<label class="field">Visible to roles<select id="nsToolRole"><option value="all">All authorized roles</option><option value="admin">Admin only</option><option value="cashier">Cashier only</option><option value="rep">Sales Rep only</option><option value="hr">HR only</option></select></label></div>
+<div class="row"><button type="button" class="secondary" onclick="ownerAddRemoteTool()">＋ Add Remote Tool</button></div>
+<div id="nsOwnerRemoteToolList" role="list" class="muted">Load a Customer account to view its remote tools.</div>
+<section id="nsRoleEditor" class="ns-role-editor" aria-label="Business job roles">
+  <h3>👥 Staff Job Roles · Android &amp; Windows</h3>
+  <p class="muted">Create a job title for this business. A job title can HIDE modules within an existing verified Cloud login role; it never grants extra access. Choose staff, assign, then Publish POS Settings.</p>
+  <div class="grid"><label class="field">Job title<input id="nsJobName" maxlength="45" placeholder="e.g. Stock Keeper, Supervisor, Accountant"></label>
+  <label class="field">Existing Cloud login type<select id="nsJobBase"><option value="admin">Business Admin</option><option value="cashier">Cashier</option><option value="rep">Sales Rep</option><option value="hr">HR / Payroll</option></select></label></div>
+  <p class="muted">Allowed modules in this job title</p><div id="nsJobFeatureGrid" class="toggle-grid"></div>
+  <div class="row"><button type="button" id="nsJobSave">＋ Add / Update Job Title</button><button class="secondary" type="button" id="nsJobReset">Clear Editor</button></div>
+  <div id="nsJobList" role="list" class="ns-role-list"></div>
+  <h4>Assign a job title to a verified staff login</h4>
+  <div class="row"><button type="button" class="secondary" id="nsJobLoadStaff">Load Cloud Staff Accounts</button><span class="muted" id="nsJobStaffStatus" role="status"></span></div>
+  <div class="grid"><label class="field">Staff account<select id="nsJobStaff"><option value="">Load cloud staff first</option></select></label><label class="field">Job title<select id="nsJobAssignment"><option value="">Default Cloud Role (no custom restrictions)</option></select></label></div>
+  <div class="row"><button type="button" id="nsJobAssign">Assign to Staff (draft)</button></div>
+  <p class="muted" id="nsJobNotice" role="status">Load the business from Cloud to edit job roles. Publish POS Settings to synchronize changes.</p>
+ </section>
+ <style>.ns-role-editor{margin:24px 0;padding:17px;background:#eef6ff;border:1px solid #c9dcf6;border-radius:18px;color:#173453}.ns-role-editor h3,.ns-role-editor h4{color:#12376c}.ns-role-list>div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px;margin:7px 0;background:#fff;border-radius:10px;color:#193457}.ns-role-editor .toggle-grid{max-height:250px;overflow-y:auto}.ns-role-editor .toggle-grid label{font-size:12px}</style>
+<h3>Receipt &amp; UI Fixes</h3><div class="grid">
+<label class="field">Receipt width<select id="configReceiptWidth"><option value="auto">Auto (printer default)</option><option value="58">58 mm</option><option value="80">80 mm</option></select></label>
+<label class="field">Bill website display<select id="configWebsite"><option value="www">www. only</option><option value="full">Full URL</option></select></label>
+<label class="field">Default language<select id="configLanguage"><option value="en">English</option><option value="si">සිංහල</option><option value="ta">தமிழ்</option></select></label>
+<label class="field">POS colour theme<select id="configTheme"><option value="blue">Blue</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+<label class="field">Invoice prefix<input id="configInvoicePrefix" maxlength="10" placeholder="INV"></label>
+<label class="field">Receipt footer note<input id="configReceiptNote" maxlength="140" placeholder="Thank you! Visit again."></label></div>
+<label style="display:flex;align-items:center;gap:9px;margin-top:12px"><input type="checkbox" id="configReceiptDedup" checked style="width:auto"> Print each contact field only once</label>
+<div class="row" style="margin-top:18px"><button onclick="saveFullControl()">Publish POS Settings</button><button class="secondary" onclick="loadFullControl()">Discard Changes / Reload</button></div>
+<p class="muted" id="controlStatus" role="status">No customer selected.</p></div>
+
+<div class="panel owner-detail-panel" id="ownerDeviceMonitor">
+<h2>🖨️ Device &amp; Printer Monitoring</h2><p class="muted">Shows only device data voluntarily reported by an integrated customer POS. Does not remotely connect to, scan or control the customer's printer.</p>
+<div class="grid"><label class="field">Business<select class="controlBusiness" id="deviceBusiness"><option value="">Choose business...</option></select></label>
+<label class="field">Preferred printer technology<select id="printerTech"><option value="auto">Auto detection</option><option value="usb">USB</option><option value="bluetooth">Bluetooth</option><option value="lan">LAN / Wi-Fi</option></select></label>
+<label class="field">Printer paper width<select id="printerWidth"><option value="auto">Auto</option><option value="58">58mm</option><option value="80">80mm</option></select></label>
+<label class="field">Auto print on completed bill<select id="printerAuto"><option value="false">No</option><option value="true">Yes</option></select></label></div>
+<div class="row"><button class="secondary" onclick="loadDevices()">Refresh Device Status</button><button onclick="savePrinterPreferences()">Publish Printer Preferences</button></div>
+<p class="muted" id="deviceStatus">Choose business to see reported device status.</p><div id="devicesList"></div></div>
+
+<div class="panel owner-detail-panel" id="ownerUpdateCenter">
+<h2>🚀 Remote Update Center</h2><p class="muted">Publish version and trusted download link for a specific business. Android / Windows customers must approve and install the package; this feature does not silently install software.</p>
+<div class="grid"><label class="field">Business<select class="controlBusiness" id="releaseBusiness"><option value="">Choose business...</option></select></label>
+<label class="field">Platform<select id="releasePlatform"><option value="android">Android APK</option><option value="windows">Windows EXE</option></select></label>
+<label class="field">New version<input id="releaseVersion" placeholder="2.0.1" maxlength="32"></label>
+<label class="field">HTTPS download link<input id="releaseURL" type="url" placeholder="https://example.com/download/app.apk" maxlength="400"></label>
+<label class="field">Release notes<textarea id="releaseNotes" maxlength="500" rows="3" placeholder="What was fixed?"></textarea></label></div>
+<div class="row"><button class="secondary" onclick="loadReleases()">View Releases</button><button onclick="publishRelease()">Publish Update Notice</button></div><div id="releaseList"></div></div>
+
+<div class="panel owner-detail-panel" id="ownerBackupCenter"><h2>💾 Daily Backup &amp; PC Download</h2>
+<p class="muted">Every customer's backup is stored with its own business name and unique business code. Cloud uploads and automatic downloads to YOUR Windows PC are independently controlled. OFF never deletes old backups. This feature requires the R2 bucket + updated Customer POS.</p>
+<div class="grid">
+<label class="field">Select Customer Business<select class="controlBusiness" id="backupBusiness" onchange="backupLoadedBusiness='';backupStatus('Press Load to select customer')"><option value="">Choose business...</option></select></label>
+<div><button class="secondary" onclick="ownerLoadBackupPolicy()" type="button">🔍 Load Customer</button></div>
+</div>
+<div class="grid" style="margin-top:13px">
+<label class="field" style="background:#e3f8ff;border-radius:12px;padding:15px;color:#10375a"><span style="display:flex;gap:9px;align-items:center"><input id="backupCloudEnabled" style="width:23px;height:23px" type="checkbox"/> <b>☁ Cloud Auto Backup ON/OFF</b></span><small>Uploads core POS backup when compatible POS is open, online and Admin logged in</small></label>
+<label class="field" style="background:#e9f5e5;border-radius:12px;padding:15px;color:#244c31"><span style="display:flex;gap:9px;align-items:center"><input id="backupPcEnabled" style="width:23px;height:23px" type="checkbox"/> <b>💻 Download to My PC ON/OFF</b></span><small>PC Backup Manager downloads only approved customers' archived files</small></label>
+</div>
+<div style="padding:11px 0"><label style="display:flex;gap:10px;align-items:flex-start;color:#d9eaff"><input id="backupConsent" style="width:20px;height:20px;flex-shrink:0" type="checkbox"/> I confirm this customer has authorized managed off-site backups and developer PC storage.</label><p id="backupConsentNote" class="muted">Customer authorization required before enabling.</p></div>
+<div class="row"><button onclick="ownerSaveBackupPolicy()" type="button">✅ Save ON/OFF Settings</button><button class="secondary" onclick="ownerLoadBackupFiles()" type="button">📁 View Existing Backups</button></div>
+<div id="backupFiles" style="padding-top:10px"></div>
+<hr style="border:0;border-top:1px solid #4966a055;margin:16px 0"/>
+<h3 style="margin:5px 0 9px">🔐 My Windows PC Auto Download Access</h3>
+<p class="muted">Create a <b>read-only</b> PC Backup Agent token. Token cannot access customer login, bills, settings changes or deletion. Replacing it invalidates the old token immediately. The token is only shown once.</p>
+<div class="row"><button class="secondary" onclick="ownerRotateBackupAgentKey()" type="button">Create / Rotate PC Token</button><button class="secondary" onclick="ownerCopyBackupAgentKey()" type="button">Copy Token</button><button class="reject" onclick="ownerRevokeBackupAgentKey()" type="button">Revoke PC Token</button></div>
+<input id="backupAgentKey" type="text" readonly autocomplete="off" placeholder="Token appears here once after creation" style="margin-top:9px"/>
+<p id="backupCenterStatus" class="muted">Select a business and press Load.</p></div>
+<div class="panel owner-detail-panel" id="ownerSettingsBackup">
+<h2>🗂️ POS Settings Backup / Restore</h2><p class="muted"><b>Settings-only</b> recovery. Not a complete inventory, invoice, customer or full Cloudflare D1 database backup. Make a real D1 backup separately before destructive operations.</p>
+<div class="grid"><label class="field">Business<select class="controlBusiness" id="backupBusiness"><option value="">Choose business...</option></select></label></div>
+<div class="row"><button class="secondary" onclick="viewSettingsHistory()">Load Settings History</button><button onclick="exportSettingsBackup()">Export Settings JSON</button></div>
+<label class="field" style="margin-top:12px">Exported configuration (select to copy)<textarea id="settingsJSON" rows="7" readonly placeholder="Settings JSON will appear here"></textarea></label>
+<div id="settingsHistory"></div><p class="muted" id="backupStatus">Version restore asks for confirmation.</p></div>
+
+<div class="panel owner-detail-panel" id="ownerReportPanel">
+<h2>📊 Reports &amp; Audit History</h2><p class="muted">Live statistics are based on Cloudflare tenant / subscription / payment records. No guessed sales or profit figures.</p>
+<div class="row"><button onclick="loadOwnerReports()">Refresh Statistics &amp; Audit</button></div><div id="ownerStats" class="report-grid"></div><h3>Owner Changes (recent)</h3><div id="ownerAudit"></div></div>
+
+<div class="panel owner-detail-panel" id="ownerSupportPanel">
+<h2>🧰 Remote POS Support</h2><p class="muted">Find a business, inspect submitted device status, update allowed settings, or publish a version notice. For app crashes, incorrect billing calculations and code bugs, a rebuilt client app is still required.</p>
+<div class="grid"><label class="field">Select customer<select class="controlBusiness" id="supportBusiness"><option value="">Choose business...</option></select></label></div>
+<div class="row"><button onclick="supportTo('devices')">Check Devices</button><button class="secondary" onclick="supportTo('remoteControl')">Change POS Settings</button><button class="secondary" onclick="supportTo('updateCenter')">Publish Fix Update</button><button class="secondary" onclick="supportTo('settingsBackup')">Restore Settings</button></div>
+<p class="muted">Only owner-approved configuration controls are exposed. No remote screen access or arbitrary commands.</p></div>
+<nav aria-label="Owner sections" class="owner-bottom-nav" id="ownerBottomNav"><button class="owner-nav-button" data-owner-nav="dashboard" onclick="showOwnerSection('dashboard')" type="button"><span class="owner-nav-icon">⌂</span><span>Home</span></button><button class="owner-nav-button" data-owner-nav="businesses" onclick="showOwnerSection('businesses')" type="button"><span class="owner-nav-icon">👥</span><span>Customers</span></button><button class="owner-nav-button" data-owner-nav="add" onclick="showOwnerSection('add')" type="button"><span class="owner-nav-icon">＋</span><span>Add</span></button><button class="owner-nav-button" data-owner-nav="subscriptions" onclick="showOwnerSection('subscriptions')" type="button"><span class="owner-nav-icon">📅</span><span>Subscription</span></button><button class="owner-nav-button" data-owner-nav="branding" onclick="showOwnerSection('branding')" type="button"><span class="owner-nav-icon">⚙</span><span>Branding</span></button></nav></div></main><script>
+const $=id=>document.getElementById(id),escapeHTML=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let token=sessionStorage.getItem('ns_owner_token')||'';let businessRecords=[];
+$('api').value=localStorage.getItem('ns_owner_api')||'https://ns-pos-pro-cloud.nextsolutionstudio.workers.dev';
+function notify(text){$('msg').textContent=text;$('msg').style.display='block';setTimeout(()=>$('msg').style.display='none',6000)}
+async function request(path,method='GET',body){const base=$('api').value.trim().replace(/\/$/,'');if(!/^https:\/\//.test(base)&&!/^http:\/\/localhost(?::\d+)?$/.test(base))throw Error('Use HTTPS Worker URL');let res=await fetch(base+path,{method,headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},body:body?JSON.stringify(body):undefined});const value=await res.json().catch(()=>({error:'Server did not return JSON. Check API URL / Worker deployment'}));if(!res.ok)throw Error(value.error||('Server HTTP '+res.status));return value}
+// Email is saved only after successful owner authentication; the password is never persisted.
+const ownerRememberEmailKey = 'ns_owner_remembered_email_v1';
+function updateOwnerAccountCard(){
+  let saved = '';
+  try { saved = (localStorage.getItem(ownerRememberEmailKey)||'').trim(); } catch (_) {}
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(saved) && saved.length<=254;
+  if(valid){ $('email').value=saved; $('ownerRememberedEmail').textContent=saved; }
+  else {$('ownerRememberedEmail').textContent='';}
+  $('ownerSavedAccount').hidden=!valid;
+  $('ownerEmailInputBlock').hidden=valid;
+  $('email').required=!valid;
+}
+function changeOwnerEmail(){
+  try{localStorage.removeItem(ownerRememberEmailKey)}catch(_){}
+  $('email').value='';
+  updateOwnerAccountCard();
+  $('email').focus();
+}
+function toggleOwnerPassword(){
+  const field=$('password'), visible=field.type==='password';
+  field.type=visible?'text':'password';
+  $('ownerTogglePassword').textContent=visible?'Hide':'Show';
+  $('ownerTogglePassword').setAttribute('aria-label',visible?'Hide password':'Show password');
+}
+updateOwnerAccountCard();
+async function login(){
+  const button=$('ownerLoginButton'), email=$('email').value.trim().toLowerCase(),password=$('password').value;
+  if(!email||!password){notify('Enter owner email and password');return}
+  button.disabled=true;button.textContent='Checking owner access…';
+  try{
+    const r=await request('/v1/owner/login','POST',{email,password});
+    if(!r.ok||!r.token||r.role!=='owner')throw Error('Developer Owner login not confirmed');
+    token=r.token;
+    sessionStorage.setItem('ns_owner_token',token);
+    localStorage.setItem('ns_owner_api',$('api').value.trim());
+    try{localStorage.setItem(ownerRememberEmailKey,email)}catch(_){}
+    updateOwnerAccountCard();
+    $('password').value=''; $('password').type='password'; $('ownerTogglePassword').textContent='Show';
+    await refresh();
+  }catch(e){$('password').value=''; notify(e.message)}
+  finally{button.disabled=false;button.innerHTML='Sign In Securely <span aria-hidden="true">➜</span>'}
+}
+function logout(){
+  token='';sessionStorage.removeItem('ns_owner_token');
+  $('password').value='';$('workspace').style.display='none';
+  $('login').style.display='block';$('logout').style.display='none';
+  document.body.classList.add('owner-login-state');
+  updateOwnerAccountCard();
+}
+async function refresh(){
+  try{
+    let [t,p]=await Promise.all([request('/v1/owner/tenants'),request('/v1/owner/payments')]);
+    fillBusinessOptions(t.tenants.filter(x=>x.status!=='archived'));
+    $('workspace').style.display='block';$('login').style.display='none';$('logout').style.display='';
+    document.body.classList.remove('owner-login-state');
+    businessRecords=t.tenants; renderTenantList(); updateOwnerMetrics();renderOwnerPayments(p.payments||[],p.totalCount);
+  }catch(e){notify(e.message);if(e.message.includes('Login')||e.message.includes('401')||e.message.includes('Invalid'))logout()}
+}
+let tenantPage=0;
+function renderTenantList(){
+ const search=$('tenantSearch').value.trim().toLowerCase();
+ const kind=$('tenantTypeFilter').value;
+ const visible=businessRecords.filter(x=>{
+   const status=x.status==='archived'?'archived':'current';
+   return (kind==='all'||kind===status)&&(!search||String(x.id).toLowerCase().includes(search)||String(x.name||'').toLowerCase().includes(search));
+ });
+ const size=Number($('tenantPageSize').value)||8;
+ const pages=Math.max(1,Math.ceil(visible.length/size));
+ tenantPage=Math.min(Math.max(0,tenantPage),pages-1);
+ const page=visible.slice(tenantPage*size,(tenantPage+1)*size);
+ const active=businessRecords.filter(x=>x.status!=='archived').length;
+ const archived=businessRecords.length-active;
+ $('tenantSummary').textContent=`${active} current · ${archived} archived · ${visible.length} matching`;
+ $('tenantPageLabel').textContent=`Page ${tenantPage+1} of ${pages}`;
+ $('tenantPrev').disabled=tenantPage===0;
+ $('tenantNext').disabled=tenantPage>=pages-1;
+ $('archiveTools').style.display=page.some(x=>x.status!=='archived')?'flex':'none';
+ $('selectAllBusiness').checked=false;
+ $('tenants').innerHTML=page.length?page.map(x=>{
+   const id=String(x.id);
+   if(!/^[A-Z0-9_-]{4,40}$/.test(id))return '';
+   const archivedAccount=x.status==='archived';
+   return `<div class="item"><div class="row">${archivedAccount?'':`<input name="archiveBusiness" type="checkbox" value="${escapeHTML(id)}" style="width:auto" aria-label="Select ${escapeHTML(id)}" onchange="updateSelectedBusinessCount()">`}
+   <div><b>${escapeHTML(x.name)}</b> · <code>${escapeHTML(id)}</code><div class="muted">Expiry: ${escapeHTML(String(x.expires_at).slice(0,10))} · Rs. ${Number(x.fee_lkr)} / 30 days · ${escapeHTML(x.status)}</div></div></div>
+   <div class="row">${archivedAccount?`<button class="secondary" onclick="restoreBusiness('${id}')">Restore (blocked)</button><button class="reject" onclick="deleteBusiness('${id}')">Delete permanently</button>`:`<button class="secondary" onclick="setFee('${id}',${Number(x.fee_lkr)})">Edit Fee</button><button class="secondary" onclick="selectSubscription('${id}')">Extend</button><button class="${x.status==='active'?'reject':'secondary'}" onclick="setStatus('${id}','${x.status==='active'?'blocked':'active'}')">${x.status==='active'?'Block':'Unblock'}</button><button class="secondary" onclick="deleteBusiness('${id}')">Delete permanently</button>`}</div></div>`;
+ }).join(''):'No accounts match your search.';
+ updateSelectedBusinessCount();
+}
+function updateSelectedBusinessCount(){
+ const inputs=[...document.querySelectorAll('input[name="archiveBusiness"]')];
+ const chosen=inputs.filter(x=>x.checked).length;
+ $('selectedBusinessCount').textContent=chosen+' selected';
+ $('selectAllBusiness').checked=inputs.length>0&&chosen===inputs.length;
+}
+
+// Destructive operations require an exact business ID and typed confirmation.
+// There is no API access for admin/rep accounts: server checks owner role.
+async function deleteBusiness(businessCode) {
+  const approved=await ownerDeleteConfirmation('Permanently delete '+businessCode+' and all linked logins, payments, branding and cloud records? This cannot be undone.',businessCode);
+  if(!approved)return;
+  try {
+    await request('/v1/owner/delete-business','POST',{
+      businessCode, confirmBusinessCode:businessCode, deleteAllRecords:true
+    });
+    notify('Permanently deleted '+businessCode); await refresh();
+  } catch(e) { notify('Delete failed: '+ownerPaymentDeleteError(e)); }
+}
+async function deleteSelectedBusinesses() {
+  const ids=[...document.querySelectorAll('input[name="archiveBusiness"]:checked')].map(e=>e.value);
+  if(!ids.length) {notify('Select test accounts to delete');return;}
+  const approved=await ownerDeleteConfirmation('Selected IDs: '+ids.join(', ')+'\nPermanently delete these businesses and all linked records?','DELETE '+ids.length);
+  if(!approved)return;
+  let completed=[];
+  for(const businessCode of ids) {
+    try {
+      await request('/v1/owner/delete-business','POST',{
+        businessCode, confirmBusinessCode:businessCode, deleteAllRecords:true
+      });
+      completed.push(businessCode);
+    } catch(e) {notify('Stopped after deleting '+completed.length+'/'+ids.length+'. Failed on '+businessCode+': '+e.message);await refresh();return;}
+  }
+  notify('Permanently deleted '+completed.length+' test business(es) and records');
+  await refresh();
+}
+function toggleAllBusinesses(checked){document.querySelectorAll('input[name="archiveBusiness"]').forEach(x=>x.checked=checked);updateSelectedBusinessCount()}
+async function archiveSelectedBusinesses(){
+ const ids=[...document.querySelectorAll('input[name="archiveBusiness"]:checked')].map(e=>e.value);
+ if(!ids.length)return notify('Select test accounts first');
+ await archiveBusinesses(ids);
+}
+async function archiveBusinesses(ids){
+ if(!ids.length)return;
+ const confirmation=prompt('Archive '+ids.length+' account(s) and block their logins? Type ARCHIVE to confirm:');
+ if(confirmation!=='ARCHIVE')return;
+ try{for(const businessCode of ids)await request('/v1/owner/archive-business','POST',{businessCode,action:'archive'});
+  notify('Archived '+ids.length+' account(s). They are hidden from the current list.');await refresh();
+ }catch(e){notify('Archive error: '+e.message+' (refresh to check partial changes)');await refresh()}
+}
+async function restoreBusiness(businessCode){
+ if(!confirm('Restore '+businessCode+' in BLOCKED mode? Customer login stays disabled until you Unblock.'))return;
+ try{await request('/v1/owner/archive-business','POST',{businessCode,action:'restore'});await refresh();notify('Restored as blocked. Unblock only when ready.')}catch(e){notify(e.message)}
+}
+async function createTenant(){try{await request('/v1/owner/tenants','POST',{businessCode:$('businessCode').value.trim(),name:$('businessName').value.trim()});notify('Business created');refresh()}catch(e){notify(e.message)}}
+async function createUser(){try{const username=prompt('Username for this account (3-40 characters)');if(username===null)return;await request('/v1/owner/users','POST',{username:username.trim(),businessCode:$('uBusiness').value.trim(),email:$('uEmail').value.trim(),password:$('uPassword').value,role:$('uRole').value});$('uPassword').value='';notify('Login created. Share the temporary password securely.')}catch(e){notify(e.message)}}
+async function setFee(id,current){const raw=prompt('Monthly fee in LKR for '+id,current);if(raw===null)return;const fee=Number(raw);if(!Number.isSafeInteger(fee)||fee<0||fee>1000000)return notify('Enter a valid whole number');try{await request('/v1/owner/set-fee','POST',{businessCode:id,feeLkr:fee});notify('Monthly fee updated');refresh()}catch(e){notify(e.message)}}
+async function extend(id){selectSubscription(id)}
+function selectSubscription(id){$('subBusiness').value=id;$('subBusiness').scrollIntoView({behavior:'smooth',block:'center'});$('subStatus').textContent='Selected '+id+'; choose extension days and confirm.'}
+async function extendSelectedSubscription(){const businessCode=$('subBusiness').value,option=$('subDays').value,days=Number(option==='custom'?$('subCustomDays').value:option);try{if(!businessCode)throw Error('Select business first');if(!Number.isSafeInteger(days)||days<1||days>3650)throw Error('Extension must be 1–3650 days');if(!confirm('Extend '+businessCode+' subscription by '+days+' days?'))return;const r=await request('/v1/owner/extend','POST',{businessCode,days});$('subStatus').textContent='✓ Subscription extended. New expiry: '+String(r.expiresAt||'').slice(0,10);await refresh()}catch(e){$('subStatus').textContent='Extension failed: '+e.message}}
+async function setStatus(id,status){
+ const currentApi=document.getElementById('api').value.trim().replace(/\/$/,'');
+ const customerApi='https://ns-pos-pro-cloud.nextsolutionstudio.workers.dev';
+ if(currentApi!==customerApi && !confirm('Warning: Owner API '+currentApi+' differs from Customer API '+customerApi+'. Blocking another server will not block your installed Customer App. Continue?'))return;
+ if(!confirm('Change '+id+' to '+status+'?'))return;
+ try{
+  const saved=await request('/v1/owner/set-status','POST',{businessCode:id,status});
+  if(saved.status!==status||saved.confirmed!==true)throw Error('Cloud did not confirm the status update');
+  const verify=await request('/v1/owner/tenants');
+  const actual=(verify.tenants||[]).find(t=>t.id===id);
+  if(!actual||actual.status!==status)throw Error('Business status was not confirmed by Cloud. Try refresh.');
+  await refresh();notify('✓ '+id+' is '+status.toUpperCase()+' in Cloud. Online Customer apps will lock on next license check.');
+ }catch(e){notify('Cannot change account status: '+e.message)}
+}
+
+function ownerPaymentDeleteError(e){const m=String(e?.message||e||'Unknown error');if(/Route not found|not found|404/i.test(m))return 'Cloudflare Worker is missing Owner Payment Delete API. Merge and deploy /v1/owner/payment-delete and /v1/owner/payments/count first. ('+m+')';if(/403|401|unauthorized|owner only/i.test(m))return 'Owner login permission or session expired. Sign in as Developer Owner. ('+m+')';return m}
+async function checkOwnerPaymentDeleteApi(){try{const r=await request('/v1/owner/payments/count');$('paymentsSummary').textContent='✓ Cloud payment-delete API available. '+r.totalCount+' payment requests stored. Export before deleting.';notify('Payment delete API connected.')}catch(e){notify('Payment Delete unavailable: '+ownerPaymentDeleteError(e));}}
+
+// NS OWNER v2.2.2 – TEST PAYMENT CLEANUP. Only an authenticated OWNER can call these APIs.
+let currentPaymentRows=[];
+const selectedPaymentIds=new Set();
+function safePaymentId(id){return /^[a-f0-9-]{8,80}$/i.test(String(id||''))?String(id):''}
+function renderOwnerPayments(rows,totalCount){
+ currentPaymentRows=Array.isArray(rows)?rows:[];
+ const visibleIds=new Set(currentPaymentRows.map(x=>String(x.id)));
+ for(const id of [...selectedPaymentIds]) if(!visibleIds.has(id))selectedPaymentIds.delete(id);
+ const count=Number.isInteger(totalCount)?totalCount:currentPaymentRows.length;
+ $('paymentsSummary').textContent=`${count} payment request(s). Showing ${currentPaymentRows.length}. Selected: ${selectedPaymentIds.size}. Export before deleting. Payments only; customer accounts and subscriptions remain unchanged.`;
+ $('payments').innerHTML=currentPaymentRows.length?currentPaymentRows.map(x=>{
+  const id=safePaymentId(x.id); if(!id)return '';
+  const status=escapeHTML(x.status),ref=escapeHTML(x.reference||'Slip supplied');
+  return `<div class="item" data-payment-id="${escapeHTML(id)}"><label style="display:flex;gap:10px;align-items:center;flex:1;min-width:190px"><input aria-label="Select payment" type="checkbox" class="pay-select" data-payment-id="${escapeHTML(id)}" ${selectedPaymentIds.has(id)?'checked':''} style="width:20px;height:20px"/><span><b>${escapeHTML(x.tenant_id)}</b> · ${ref}<span class="muted" style="display:block">${escapeHTML(x.submitted_at)} · Rs. ${Number(x.amount_lkr)||0} · ${status}</span></span></label><div class="row">${x.has_slip?`<button class="secondary" data-pay-action="slip" data-payment-id="${escapeHTML(id)}">View Slip</button>`:''}${x.status==='pending'?`<button data-pay-action="approve" data-payment-id="${escapeHTML(id)}">Approve</button><button class="reject" data-pay-action="reject" data-payment-id="${escapeHTML(id)}">Reject</button>`:''}<button class="reject" data-pay-action="delete" data-payment-id="${escapeHTML(id)}">Delete</button></div></div>`;
+ }).join(''):'No payment requests';
+}
+$('payments').addEventListener('change',e=>{
+ const el=e.target.closest('.pay-select');if(!el)return;
+ const id=safePaymentId(el.dataset.paymentId); if(!id)return;
+ if(el.checked)selectedPaymentIds.add(id);else selectedPaymentIds.delete(id);
+ $('paymentsSummary').textContent=`${currentPaymentRows.length} visible payment(s). ${selectedPaymentIds.size} selected for deletion.`;
+});
+$('payments').addEventListener('click',e=>{
+ const btn=e.target.closest('button[data-pay-action]');if(!btn)return;
+ const id=safePaymentId(btn.dataset.paymentId);if(!id)return;
+ const action=btn.dataset.payAction;
+ if(action==='delete')deleteOneTestPayment(id);
+ if(action==='slip')viewSlip(id);
+ if(action==='approve')decide(id,'approved');
+ if(action==='reject')decide(id,'rejected');
+});
+async function exportPaymentSummary(){
+ try{
+  const data=await request('/v1/owner/payments/export');
+  const jsonText=JSON.stringify({exported_at:new Date().toISOString(),note:'Payment metadata only; transfer slip images omitted.',payments:data.payments||[]},null,2);
+  if(window.OwnerNative?.savePaymentsJson){window.OwnerNative.savePaymentsJson(jsonText)}else{
+    const blob=new Blob([jsonText],{type:'application/json'});
+    const link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download='NS_OWNER_Payments_'+new Date().toISOString().slice(0,10)+'.json';document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),10000);
+  }
+  notify('Payment list exported. Also take a Cloudflare D1 backup before clearing all.');
+ }catch(e){notify('Export failed: '+e.message)}
+}
+async function deleteOneTestPayment(id){
+ if(!confirm('DELETE TEST PAYMENT '+id+'?\nThis cannot be undone. Customer account and subscription expiry will not change.'))return;
+ try{await request('/v1/owner/payment-delete','POST',{ids:[id],confirm:'DELETE 1',confirmCount:1});selectedPaymentIds.delete(id);notify('Test payment deleted.');await refresh();}catch(e){notify('Payment delete failed: '+ownerPaymentDeleteError(e))}
+}
+async function deleteSelectedTestPayments(){
+ const ids=[...selectedPaymentIds].filter(safePaymentId);
+ if(!ids.length)return notify('Tick the test payment(s) to delete.');
+ const typed=prompt(`Delete ${ids.length} selected TEST payment(s)?\nType exactly: DELETE ${ids.length}`);
+ if(typed!==`DELETE ${ids.length}`)return;
+ try{const r=await request('/v1/owner/payment-delete','POST',{ids,confirm:typed,confirmCount:ids.length});selectedPaymentIds.clear();notify('Deleted '+r.deleted+' selected test payment(s).');await refresh();}catch(e){notify('Delete failed: '+ownerPaymentDeleteError(e))}
+}
+async function clearAllTestPayments(){
+ const countInfo=await request('/v1/owner/payments/count').catch(e=>{notify('Count failed: '+ownerPaymentDeleteError(e));return null});if(!countInfo)return;
+ const count=Number(countInfo.totalCount||0);if(!count)return notify('No payments to clear.');
+ if(!confirm(`You are about to delete ALL ${count} payment requests (pending, approved, rejected) from the Cloudflare database.\nYou confirmed ALL are TEST records.\nCustomer accounts stay. Approved subscriptions are NOT reversed.\nTake a D1 backup first. Continue?`))return;
+ const typed=prompt(`PERMANENT TEST CLEANUP\nType exactly: DELETE ALL ${count}`);
+ if(typed!==`DELETE ALL ${count}`)return;
+ try{const r=await request('/v1/owner/payments-clear-test','POST',{confirm:typed,confirmCount:count,allAreTest:true});selectedPaymentIds.clear();notify('Deleted '+r.deleted+' test payments. Customer accounts not touched.');await refresh();}catch(e){notify('Clear failed: '+ownerPaymentDeleteError(e))}
+}
+async function decide(id,decision){if(!confirm((decision==='approved'?'Approve payment and renew for 30 days':'Reject this payment')+'?'))return;try{await request('/v1/owner/payment-decision','POST',{id,decision});refresh()}catch(e){notify(e.message)}}
+async function viewSlip(id){try{let r=await request('/v1/owner/slip?id='+encodeURIComponent(id));if(!r.slipData)return notify('No image slip');let img=new Image();img.src=r.slipData;let w=window.open('','_blank');if(!w)return notify('Allow popup to view slip');w.document.title='Payment Slip';w.document.body.style='margin:10px;background:#f2f4fa;text-align:center';w.document.body.append(img)}catch(e){notify(e.message)}}
+if(token)refresh();
+
+async function loadManagedUsers(){try{const code=$('manageBusiness').value.trim();if(!code)throw Error('Enter business code');const data=await request('/v1/owner/user-list?businessCode='+encodeURIComponent(code));$('managedUsers').innerHTML=data.users.length?data.users.map(u=>`<div class="item"><div><b>${escapeHTML(u.username||u.email)}</b><div class="muted">${escapeHTML(u.email)}</div><div class="muted">${escapeHTML(u.role)} · ${u.active?'Active':'Disabled'} · ${escapeHTML(u.id)}</div></div><div class="row"><button class="secondary" onclick="manageUser('${escapeHTML(u.id)}','set-email')">Edit Email</button><button class="secondary" onclick="manageUser('${escapeHTML(u.id)}','set-username')">Edit Username</button><button class="secondary" onclick="manageUser('${escapeHTML(u.id)}','reset-password')">Reset Password</button><button class="secondary" onclick="manageUser('${escapeHTML(u.id)}','${u.active?'disable':'enable'}')">${u.active?'Disable':'Enable'}</button><button class="secondary" onclick="manageUser('${escapeHTML(u.id)}','logout-devices')">Logout Devices</button><button class="reject" onclick="manageUser('${escapeHTML(u.id)}','remove')">Remove</button></div></div>`).join(''):'No users for this business';}catch(e){notify(e.message)}}
+async function manageUser(userId,action){try{let data={userId,action};if(action==='set-username'){const v=prompt('New username (3-40 characters)');if(v===null)return;data.username=v.trim()}else if(action==='set-email'){const v=prompt('New email address');if(v===null)return;data.email=v.trim()}else if(action==='reset-password'){const v=prompt('New password (12 to 128 characters)');if(v===null)return;if(v.length<12||v.length>128)throw Error('Password must contain 12–128 characters');data.password=v}else if(!confirm('Confirm '+action+' for selected user?'))return;await request('/v1/owner/user-update','POST',data);notify('Account updated and existing sessions revoked');await loadManagedUsers()}catch(e){notify(e.message)}}
+async function logoutManagedBusiness(){try{const businessCode=$('manageBusiness').value.trim();if(!businessCode)throw Error('Enter business code');if(!confirm('Log out ALL users of '+businessCode+'?'))return;await request('/v1/owner/logout-business','POST',{businessCode});notify('Business sessions revoked')}catch(e){notify(e.message)}}
+
+// Developer Owner remote branding. Uses the portal's authenticated bearer token.
+let brLogoData='',brRevision=0,brLoadedBusiness='',brVisuals={effect:'none',enabled:false,starts_on:'',ends_on:'',density:20};
+const brFieldMap={name:'brName',phone:'brPhone',phone2:'brPhone2',email:'brEmail',website:'brWebsite',address:'brAddress'};
+function ownerBrandMessage(value){$('brStatus').textContent=value}
+function ownerBrandPreview(){const img=$('brLogoPreview');img.style.display=brLogoData?'block':'none';img.src=brLogoData||''}
+function fillBusinessOptions(businesses){
+ const sel=$('brBusiness'),was=sel.value;sel.replaceChildren(new Option('Choose business...',''));
+ for(const t of businesses){if(!/^[A-Z0-9_-]{4,40}$/.test(String(t.id)))continue;sel.add(new Option(t.name+' · '+t.id,t.id))}
+ if([...sel.options].some(o=>o.value===was))sel.value=was;
+ const sub=$('subBusiness'),prev=sub.value;sub.replaceChildren(new Option('Choose business...',''));for(const t of businesses){if(/^[A-Z0-9_-]{4,40}$/.test(String(t.id)))sub.add(new Option(t.name+' · '+t.id,t.id))}if([...sub.options].some(o=>o.value===prev))sub.value=prev;
+}
+async function loadOwnerBranding(){
+ try{const code=$('brBusiness').value;if(!code)throw Error('Choose a business first');
+  const r=await request('/v1/owner/businesses/'+encodeURIComponent(code)+'/remote-config');
+  brLoadedBusiness=code;brRevision=Number(r.revision)||0;
+  brVisuals=r.visuals||{effect:'none',enabled:false,starts_on:'',ends_on:'',density:20};syncEffectFields(brVisuals);
+  const b=r.branding||{};for(const [k,id] of Object.entries(brFieldMap))$(id).value=b[k]||'';if(b.website) $('brWebsite').value=String(b.website).replace(/^https:\/\//i,'');
+  if(!b.name){const item=[...$('brBusiness').options].find(x=>x.value===code);$('brName').value=item?.text?.split(' · ')[0]||''}
+  brLogoData=b.logo_data||'';ownerBrandPreview();ownerBrandMessage('Loaded '+code+' · Revision '+brRevision+' · Ready to edit.');
+ }catch(err){ownerBrandMessage('Load failed: '+err.message)}
+}
+function removeOwnerBrandLogo(){brLogoData='';ownerBrandPreview();ownerBrandMessage('Logo removed from form. Press Publish to save this change.')}
+async function ownerBrandLogoChanged(input){
+ const f=input.files?.[0];if(!f)return;
+ try{
+  if(!['image/png','image/jpeg','image/webp'].includes(f.type))throw Error('Use JPG, PNG, WebP');
+  if(f.size>4*1024*1024)throw Error('Logo must be below 4 MB');
+  const src=URL.createObjectURL(f);
+  try{
+   const img=new Image();await new Promise((resolve,reject)=>{img.onload=resolve;img.onerror=reject;img.src=src});
+   if(!img.width||!img.height)throw Error('Invalid logo image');
+   const c=document.createElement('canvas');const scale=Math.min(1,480/Math.max(img.width,img.height));
+   c.width=Math.max(1,Math.round(img.width*scale));c.height=Math.max(1,Math.round(img.height*scale));
+   c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+   let out=c.toDataURL('image/webp',0.75);
+   if(out.length>210000){const r=Math.min(1,320/Math.max(img.width,img.height));c.width=Math.max(1,Math.round(img.width*r));c.height=Math.max(1,Math.round(img.height*r));c.getContext('2d').drawImage(img,0,0,c.width,c.height);out=c.toDataURL('image/webp',0.65)}
+   if(out.length>210000)throw Error('Logo remains too large; choose a smaller image');
+   brLogoData=out;ownerBrandPreview();ownerBrandMessage('Logo prepared; press Publish to save to Cloud.');
+  }finally{URL.revokeObjectURL(src)}
+ }catch(err){ownerBrandMessage('Logo error: '+err.message)}finally{input.value=''}
+}
+async function publishOwnerBranding(){
+ const btn=$('brPublish');try{
+  const code=$('brBusiness').value;if(!code||brLoadedBusiness!==code)throw Error('Select the business and press Load from Cloud first');
+  const branding={logo_data:brLogoData,phone3:''};for(const [key,id] of Object.entries(brFieldMap))branding[key]=$(id).value.trim();
+  if(branding.phone&&!/^[+()0-9 .-]{7,40}$/.test(branding.phone))throw Error('Phone 1 looks invalid');
+  if(branding.phone2&&!/^[+()0-9 .-]{7,40}$/.test(branding.phone2))throw Error('Phone 2 looks invalid');
+  brVisuals=effectFromFields();
+  if(!branding.name)throw Error('Business name is required');
+  if(branding.email&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(branding.email))throw Error('Invalid email');
+  if(branding.website && /^www\./i.test(branding.website)) branding.website='https://'+branding.website;if(branding.website&&!/^https:\/\//.test(branding.website))throw Error('Enter a website such as www.example.lk');
+  btn.disabled=true;
+  const r=await request('/v1/owner/businesses/'+encodeURIComponent(code)+'/remote-config','PUT',{
+   branding,visuals:brVisuals,expected_revision:brRevision
+  });
+  brRevision=Number(r.revision);ownerBrandMessage('✓ Published for '+code+' · Revision '+brRevision+'\nCustomer POS will refresh when online (usually within ~90 seconds).');
+ }catch(err){ownerBrandMessage('Publish failed: '+err.message)}finally{btn.disabled=false}
+}
+$('brBusiness').addEventListener('change',()=>{brLoadedBusiness='';brRevision=0;brLogoData='';ownerBrandPreview();for(const id of Object.values(brFieldMap))$(id).value='';syncEffectFields({enabled:false,effect:'none',starts_on:'',ends_on:'',density:20});clearEffectPreview();ownerBrandMessage('Business changed. Press Load from Cloud.');});
+function syncEffectFields(v){$('fxEnabled').value=v.enabled?'true':'false';$('fxEffect').value=v.effect||'none';$('fxStart').value=v.starts_on||'';$('fxEnd').value=v.ends_on||'';$('fxDensity').value=Math.min(40,Math.max(10,Number(v.density)||20));$('fxDensityValue').textContent=$('fxDensity').value+' decorative particles'}
+function effectFromFields(){const v={enabled:$('fxEnabled').value==='true',effect:$('fxEffect').value,starts_on:$('fxStart').value,ends_on:$('fxEnd').value,density:Number($('fxDensity').value)};if(v.starts_on&&v.ends_on&&v.starts_on>v.ends_on)throw Error('Effect end date must be later than start date');return v}
+// Secure global seasonal controls: never modify any business branding or invoices.
+let globalFxRevision=0,globalFxLoaded=false;
+function globalFields(){
+ const v={enabled:$('globalFxEnabled').value==='true',effect:$('globalFxEffect').value,starts_on:$('globalFxStart').value,ends_on:$('globalFxEnd').value,density:Number($('globalFxDensity').value)};
+ if(v.starts_on&&v.ends_on&&v.starts_on>v.ends_on)throw Error('End date must be later than start date');return v;
+}
+$('globalFxDensity').oninput=()=>{$('globalFxDensityText').textContent=$('globalFxDensity').value+' decorative particles'};
+function globalMsg(m){$('globalFxStatus').textContent=m}
+async function loadGlobalSeasonal(){
+ try{const r=await request('/v1/owner/seasonal-global');if(!Number.isSafeInteger(r?.revision))throw Error('Global API returned no revision');
+ globalFxRevision=r.revision;globalFxLoaded=true;const v=r.visuals||{enabled:false,effect:'aurudu',starts_on:'',ends_on:'',density:20};
+ $('globalFxEnabled').value=v.enabled?'true':'false';$('globalFxEffect').value=['aurudu','snow','christmas','vesak','new_year','none'].includes(v.effect)?v.effect:'aurudu';
+ $('globalFxStart').value=v.starts_on||'';$('globalFxEnd').value=v.ends_on||'';$('globalFxDensity').value=Math.min(40,Math.max(10,Number(v.density)||20));$('globalFxDensity').oninput();
+ $('globalFxPublish').disabled=false;$('globalFxStop').disabled=false;
+ globalMsg((r.configured?'✓ Global settings loaded':'No global setting yet')+' · Revision '+globalFxRevision+' · Publish updates ALL accounts');
+ }catch(e){globalFxLoaded=false;$('globalFxPublish').disabled=true;$('globalFxStop').disabled=true;globalMsg('Unable to load global theme: '+e.message+' · Check Cloudflare Worker route');}
+}
+async function publishGlobalSeasonal(forceOff=false){
+ if(!globalFxLoaded)return globalMsg('Load Global Settings from Cloud first');
+ let v;try{v=globalFields()}catch(e){return globalMsg(e.message)}
+ if(forceOff){v.enabled=false;v.effect='none';v.starts_on='';v.ends_on=''}
+ if(!confirm(forceOff?'Stop ALL festival effects on every Customer POS?':'Publish '+v.effect+' to ALL Customer POS accounts?'))return;
+ $('globalFxPublish').disabled=true;$('globalFxStop').disabled=true;
+ try{const r=await request('/v1/owner/seasonal-global','PUT',{visuals:v,expected_revision:globalFxRevision});
+ globalFxRevision=Number(r.revision);$('globalFxEnabled').value=v.enabled?'true':'false';$('globalFxEffect').value=v.effect;
+ globalMsg('✓ GLOBAL '+(v.enabled?'ON: '+v.effect:'OFF')+' · Revision '+globalFxRevision+' · Customer apps receive change on their next online sync');
+ }catch(e){globalMsg('Publish failed: '+e.message+' · Reload Global Settings to resolve conflicts')}
+ finally{$('globalFxPublish').disabled=false;$('globalFxStop').disabled=false}
+}
+function stopGlobalSeasonal(){return publishGlobalSeasonal(true)}
+function globalPreviewAurudu(kind){
+ const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 64 64');svg.style='width:30px;height:30px;filter:drop-shadow(0 2px 2px #0004)';
+ const add=(tag,attrs)=>{const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);svg.append(e)};
+ if(kind===0){add('path',{d:'M7 43 Q4 28 21 23 Q26 21 30 13 Q32 8 35 13 Q40 22 47 25 Q60 32 55 45 Q51 57 33 56 Q13 56 7 43Z',fill:'#c47a30',stroke:'#8d491b','stroke-width':'2.5'});}
+ else if(kind===1){for(let i=0;i<8;i++)add('ellipse',{cx:'32',cy:'18',rx:'8',ry:'13',fill:'#eebc64',stroke:'#a86c29','stroke-width':'2',transform:'rotate('+(i*45)+' 32 32)'});add('circle',{cx:'32',cy:'32',r:'9',fill:'#c38537'});}
+ else{for(let i=0;i<5;i++)add('ellipse',{cx:'32',cy:'18',rx:'8',ry:'15',fill:'#e95129',stroke:'#b72b1d',transform:'rotate('+(i*72)+' 32 32)'});add('circle',{cx:'32',cy:'32',r:'7',fill:'#f8b331'});}
+ return svg;
+}
+function previewGlobalSeasonal(){clearEffectPreview();const v=globalFields();if(!v.enabled||v.effect==='none')return notify('Select ON and a theme to preview');
+ if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return notify('Reduced motion enabled; preview is off');
+ const root=document.createElement('div');root.id='ownerEffectPreview';root.style='position:fixed;inset:0;pointer-events:none;z-index:99;overflow:hidden';
+ for(let i=0;i<v.density;i++){const el=document.createElement('span');if(v.effect==='aurudu')el.append(globalPreviewAurudu(i%3));else el.textContent=v.effect==='vesak'?'🪷':v.effect==='new_year'?'✦':'❄';el.style=`position:absolute;top:-20%;left:${(i*47.1)%98}%;font-size:${16+i%9}px;animation:ownerFall ${10+i%7}s linear ${-i%9}s infinite;`;root.append(el)}
+ const style=document.createElement('style');style.textContent='@keyframes ownerFall{from{transform:translateY(-15vh) rotate(0)}to{transform:translateY(135vh) rotate(200deg)}}';root.append(style);document.body.append(root);
+ notify('Preview only. Click Publish to ALL Customers for live display.');
+}
+let fxTimer=null;
+function clearEffectPreview(){document.getElementById('ownerEffectPreview')?.remove();if(fxTimer){clearInterval(fxTimer);fxTimer=null}}
+function previewEffect(){clearEffectPreview();const c=effectFromFields();if(!c.enabled||c.effect==='none')return notify('Turn effects ON and select a theme to preview');if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches)return notify('Reduced motion is enabled. Preview suppressed.');const root=document.createElement('div');root.id='ownerEffectPreview';root.style='position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:99';for(let i=0;i<c.density;i++){const e=document.createElement('span');e.textContent=c.effect==='new_year'?'✦':c.effect==='vesak'?'🪷':'❄';e.style=`position:absolute;left:${(i*53.7)%99}%;top:${-1*((i*29)%100)}%;font-size:${12+i%9}px;opacity:.8;animation:ownerFall ${9+i%7}s linear ${-i%9}s infinite;`;root.append(e)}const style=document.createElement('style');style.textContent='@keyframes ownerFall{from{transform:translateY(-15vh) rotate(0)}to{transform:translateY(125vh) rotate(180deg)}}';root.append(style);document.body.append(root);notify('Theme preview only. Publish to send to Customer POS.')}
+
+
+// Premium Owner Dashboard Navigation. Existing owner API functions are unchanged.
+const ownerSections={
+ add:['ownerAdd','Add New Customer','Create a business account'],
+ businesses:['ownerBusinesses','Customer Accounts','Search, edit and remove verified test accounts'],
+ users:['ownerUsers','Create Staff Logins','Admin, HR, Cashier or Rep'],
+ branding:['ownerBrandingPanel','Business Branding','Remote logo, contact and receipt details'],
+ globalSeasonal:['globalSeasonPanel','Global Festivals','All customers · one ON / OFF control'],
+ subscriptions:['subscriptionPanel','Subscriptions','Review and extend expiry dates'],
+ payments:['ownerPayments','Payment Requests','Review transfer slip requests'],
+ customerAdmins:['ownerCustomerAdmins','Manage Customer Users','Manage staff access for each business'],
+ remoteControl:['ownerRemoteControl','Full App Control','All Customer Android & Windows modules'],
+ devices:['ownerDeviceMonitor','Device & Printer','Client-reported health and printer preferences'],
+ updateCenter:['ownerUpdateCenter','Update Center','Customer app version notices'],
+ settingsBackup:['ownerSettingsBackup','Settings Backup','Settings revisions and restore'],
+ backupCenter:['ownerBackupCenter','Daily Backup Center','Customer named backups and PC ON/OFF'],
+ ownerReports:['ownerReportPanel','Reports & Audit','Live subscriptions and change records'],
+ support:['ownerSupportPanel','Remote Support','Diagnosis and safe repair actions']
+};
+function showOwnerSection(section){
+ const home=section==='dashboard'||!ownerSections[section];
+ const dashboard=document.getElementById('ownerDashboard');
+ const heading=document.getElementById('ownerViewHeading');
+ dashboard.style.display=home?'':'none';
+ heading.style.display=home?'none':'flex';
+ for(const [key,val] of Object.entries(ownerSections))document.getElementById(val[0]).style.display=(!home&&key===section)?'block':'none';
+ if(!home){document.getElementById('ownerViewTitle').textContent=ownerSections[section][1];document.getElementById('ownerViewSubtitle').textContent=ownerSections[section][2];}
+ document.querySelectorAll('.owner-nav-button').forEach(b=>b.classList.toggle('selected',b.dataset.ownerNav===section));
+ window.scrollTo({top:0,behavior:'instant'});
+}
+function updateOwnerMetrics(){
+ if(!Array.isArray(businessRecords))return;
+ const records=businessRecords;
+ // Reflect actual tenant records only; never insert mock figures.
+ const active=records.filter(x=>x.status!=='archived');
+ const now=Date.now(), sevenDays=7*86400000;
+ const soon=active.filter(x=>{const d=Date.parse(x.expires_at);return Number.isFinite(d)&&d>=now&&d<=now+sevenDays}).length;
+ const blocked=active.filter(x=>/blocked|suspended|expired/i.test(String(x.status||''))).length;
+ document.getElementById('ownerTotal').textContent=String(records.length);
+ document.getElementById('ownerActive').textContent=String(active.length-blocked);
+ document.getElementById('ownerExpiring').textContent=String(soon);
+ document.getElementById('ownerBlocked').textContent=String(blocked);
+}
+// NS OWNER v2.0: full control modules. Relies on existing request()/token owner authorization.
+const featureNames=["billing","cashier","history","returns","orders","price_check","products","grn","inventory","wholesale","delivery","vehicle_stock","customer_credit","loyalty","shops","suppliers","cheques","rep_accounts","shifts","hr_payroll","expenses","accounts_profit","reports","documents","printer_settings","branding_settings"];
+
+const OWNER_FEATURE_PRESETS={
+ small:['billing','cashier','products','history','returns','customer_credit','printer_settings','branding_settings'],
+ supermarket:['billing','cashier','products','grn','inventory','history','returns','reports','customer_credit','loyalty','shifts','printer_settings','branding_settings','price_check','suppliers'],
+ restaurant:['billing','cashier','products','grn','history','returns','orders','inventory','reports','shifts','printer_settings','branding_settings','expenses','suppliers'],
+ wholesale:['billing','cashier','products','grn','inventory','history','returns','orders','customer_credit','delivery','wholesale','vehicle_stock','rep_accounts','reports','shifts','printer_settings','branding_settings','suppliers','cheques']
+};
+function ownerFeaturePreset(name){
+ const keep=OWNER_FEATURE_PRESETS[name];
+ for(const key of featureNames){const field=document.querySelector('[data-feature="'+key+'"]');if(field)field.checked=name==='all'||keep.includes(key)}
+ $('controlStatus').textContent='Preview preset: '+name+'. Click Publish POS Settings to save changes.';
+}
+
+let loadedControlBusiness='',loadedControlRevision=-1,loadedControlData=null;
+const originalFillBusinessOptions=fillBusinessOptions;
+fillBusinessOptions=function(businesses){
+ originalFillBusinessOptions(businesses);
+ for(const select of document.querySelectorAll('select.controlBusiness')){
+  const chosen=select.value;
+  select.replaceChildren(new Option('Choose business...',''));
+  for(const t of businesses){if(/^[A-Z0-9_-]{4,40}$/.test(t.id))select.add(new Option(t.name+' · '+t.id,t.id))}
+  if([...select.options].some(x=>x.value===chosen))select.value=chosen;
+ }
+};
+function selectedControl(id){const v=$(id)?.value||'';if(!/^[A-Z0-9_-]{4,40}$/.test(v))throw Error('Choose a valid business');return v}
+function printError(target,e){$(target).textContent='Error: '+(e?.message||e);notify(e?.message||String(e))}
+// Role-scoped HTTPS links are declarative configuration; never remote JS or HTML injection.
+let nsRemoteTools=[];
+function ownerSafeToolURL(value){
+ try{const u=new URL(String(value||''));if(u.protocol!=='https:'||!u.hostname||u.username||u.password||u.port&&!['443'].includes(u.port))return '';
+ if(/^(localhost|127\.|10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|\[::1\])/.test(u.hostname.toLowerCase()))return '';
+ return u.href;
+ }catch{return ''}
+}
+function ownerRenderRemoteTools(){
+ const target=$('nsOwnerRemoteToolList');if(!target)return;target.replaceChildren();
+ nsRemoteTools.forEach((t,i)=>{const item=document.createElement('div');item.className='row';item.style='padding:8px;border:1px solid #dce8f7;border-radius:12px;margin:6px 0;background:#f6faff';
+ const label=document.createElement('span');label.style='flex:1;overflow-wrap:anywhere';label.textContent=t.name+' · '+t.role+' · '+t.url;
+ const del=document.createElement('button');del.className='reject';del.type='button';del.textContent='Remove';del.addEventListener('click',()=>{nsRemoteTools.splice(i,1);ownerRenderRemoteTools()});item.append(label,del);target.append(item)});
+ if(!nsRemoteTools.length)target.textContent='No remote tools for this business. Add HTTPS link above.';
+}
+function ownerAddRemoteTool(){
+ try{
+ const name=$('nsToolName').value.trim(),url=ownerSafeToolURL($('nsToolURL').value.trim()),role=$('nsToolRole').value;
+ if(name.length<2||name.length>55||!url||!['all','admin','cashier','rep','hr'].includes(role))throw Error('Use a name (2–55 characters), public HTTPS URL, and valid role');
+ if(nsRemoteTools.length>=16)throw Error('Limit: 16 Remote Tools per business');
+ nsRemoteTools.push({id:'tool_'+Math.random().toString(36).slice(2,12),name,url,role});ownerRenderRemoteTools();
+ $('nsToolName').value='';$('nsToolURL').value='';$('controlStatus').textContent='Tool added locally. Press Publish POS Settings to send it to Cloud.';
+ }catch(e){$('controlStatus').textContent=e.message}
+}
+function controlFromFields(){
+ const features={};for(const k of featureNames)features[k]=!!document.querySelector('[data-feature="'+k+'"]')?.checked;
+ return {...(loadedControlData||{}),remote_tools:nsRemoteTools.slice(),features,receipt:{paper_width:$('configReceiptWidth').value,website_display:$('configWebsite').value,dedupe_contacts:$('configReceiptDedup').checked,invoice_prefix:$('configInvoicePrefix').value.trim().toUpperCase()||'INV',footer_note:$('configReceiptNote').value.trim()},appearance:{language:$('configLanguage').value,theme:$('configTheme').value},printer:loadedControlData?.printer||{technology:'auto',paper_width:'auto',auto_print:false}};
+}
+function controlToFields(c){
+ const v=c?.features||{},r=c?.receipt||{},a=c?.appearance||{};nsRemoteTools=Array.isArray(c?.remote_tools)?c.remote_tools.filter(t=>t&&ownerSafeToolURL(t.url)).slice(0,16):[];ownerRenderRemoteTools();
+ for(const k of featureNames){const el=document.querySelector('[data-feature="'+k+'"]');if(el)el.checked=v[k]!==false}
+ $('configReceiptWidth').value=r.paper_width||'auto';$('configWebsite').value=r.website_display||'www';$('configReceiptDedup').checked=r.dedupe_contacts!==false;
+ $('configInvoicePrefix').value=r.invoice_prefix||'INV';$('configReceiptNote').value=r.footer_note||'Thank you! Visit again.';
+ $('configLanguage').value=a.language||'en';$('configTheme').value=a.theme||'blue';
+}
+async function loadFullControl(){try{
+ const id=selectedControl('controlBusiness');const r=await request('/v1/owner/control?businessCode='+encodeURIComponent(id));
+ loadedControlBusiness=id;loadedControlRevision=r.revision;loadedControlData=r.settings;controlToFields(r.settings);
+ $('ownerBusinessName').value=r.business?.name||'';$('controlRev').textContent='Revision '+r.revision;
+ $('controlStatus').textContent='Loaded settings. Customer app must integrate control sync to apply changes.';
+}catch(e){printError('controlStatus',e)}}
+async function saveBusinessName(){try{
+ const id=selectedControl('controlBusiness'),name=$('ownerBusinessName').value.trim();
+ if(name.length<2||name.length>100)throw Error('Business name must be 2–100 characters');
+ if(!confirm('Update business '+id+' to '+name+'?'))return;
+ await request('/v1/owner/update-business','POST',{businessCode:id,name});
+ $('controlStatus').textContent='Business renamed successfully';await refresh();
+}catch(e){printError('controlStatus',e)}}
+async function saveFullControl(){try{
+ const id=selectedControl('controlBusiness');if(id!==loadedControlBusiness||loadedControlRevision<0)throw Error('Load this business from Cloud first');
+ if(!confirm('Publish new POS controls to '+id+'?'))return;
+ const updated=controlFromFields();
+ if($('controlApplyAll')?.checked){
+  const ids=[...new Set(businessRecords.filter(x=>x.status!=='archived').map(x=>x.id).filter(x=>/^[A-Z0-9_-]{4,40}$/.test(x)))];
+  if(!ids.length)throw Error('No customer accounts loaded. Refresh customers first.');
+  const phrase='APPLY '+ids.length;
+  if(prompt('Publish these module settings to '+ids.length+' customer accounts? This changes navigation, not saved data.\nType exactly: '+phrase)!==phrase)return;
+  let done=0;const failed=[];const prevLabel=$('controlStatus');
+  for(const tenantId of ids){
+   try{
+    const current=await request('/v1/owner/control?businessCode='+encodeURIComponent(tenantId));
+    const composed={...(current.settings||{}),features:updated.features};
+    await request('/v1/owner/control','PUT',{businessCode:tenantId,expected_revision:current.revision,settings:composed});
+    done++;
+   }catch(e){failed.push(tenantId+': '+(e.message||e))}
+   prevLabel.textContent='Publishing '+(done+failed.length)+'/'+ids.length+' · success '+done+' · failures '+failed.length;
+  }
+  if(failed.length)prevLabel.textContent='Partial success: '+done+'/'+ids.length+'. Failed: '+failed.join(' | ').slice(0,500);
+  else prevLabel.textContent='Published module visibility to '+done+' customers. Sync required.';
+  $('controlApplyAll').checked=false;const latest=await request('/v1/owner/control?businessCode='+encodeURIComponent(id));loadedControlRevision=latest.revision;loadedControlData=latest.settings;$('controlRev').textContent='Revision '+latest.revision;
+ } else {
+  const r=await request('/v1/owner/control','PUT',{businessCode:id,expected_revision:loadedControlRevision,settings:updated});
+  loadedControlRevision=r.revision;loadedControlData=updated;$('controlRev').textContent='Revision '+r.revision;
+  $('controlStatus').textContent='Published revision '+r.revision+'. Customer Android/Windows applies after cloud sync.';
+ }
+}catch(e){printError('controlStatus',e)}}
+async function loadDevices(){try{
+ const id=selectedControl('deviceBusiness');
+ const [d,c]=await Promise.all([request('/v1/owner/devices?businessCode='+encodeURIComponent(id)),request('/v1/owner/control?businessCode='+encodeURIComponent(id))]);
+ const p=c.settings?.printer||{};$('printerTech').value=p.technology||'auto';$('printerWidth').value=p.paper_width||'auto';$('printerAuto').value=String(!!p.auto_print);
+ $('deviceStatus').textContent=d.devices.length+' device(s) reporting. Last reported times are UTC.';
+ $('devicesList').innerHTML=d.devices.length?d.devices.map(x=>`<div class="item"><div><b>${escapeHTML(x.platform)} · ${escapeHTML(x.app_version)}</b><div class="muted">Device: ${escapeHTML(x.device_id)} · Last online: ${escapeHTML(x.last_seen)}</div><div class="muted">Printer: ${escapeHTML(x.printer_type||'Unknown')} · ${escapeHTML(x.printer_status||'Not reported')}</div><div class="muted">Diagnostic: ${escapeHTML(x.last_error||'None reported')}</div></div></div>`).join(''):'<div class="item">No devices have reported yet. Install the optional client adapter and sign in on the customer POS.</div>';
+}catch(e){printError('deviceStatus',e)}}
+async function savePrinterPreferences(){try{
+ const id=selectedControl('deviceBusiness');if(!confirm('Set printer preferences for '+id+'?'))return;
+ const c=await request('/v1/owner/control?businessCode='+encodeURIComponent(id));
+ const settings=c.settings;settings.printer={technology:$('printerTech').value,paper_width:$('printerWidth').value,auto_print:$('printerAuto').value==='true'};
+ const r=await request('/v1/owner/control','PUT',{businessCode:id,expected_revision:c.revision,settings});
+ $('deviceStatus').textContent='Printer preferences revision '+r.revision+' published. No physical connection has been changed.';
+}catch(e){printError('deviceStatus',e)}}
+async function loadReleases(){try{
+ const id=selectedControl('releaseBusiness');const r=await request('/v1/owner/releases?businessCode='+encodeURIComponent(id));
+ $('releaseList').innerHTML=r.releases.length?r.releases.map(x=>`<div class="item"><div><b>${escapeHTML(x.platform.toUpperCase())} v${escapeHTML(x.version)}</b><div class="muted">${escapeHTML(x.created_at)} · ${escapeHTML(x.notes||'')}</div><div class="muted">${escapeHTML(x.download_url)}</div></div></div>`).join(''):'<div class="item">No releases published for this business.</div>';
+}catch(e){notify(e.message)}}
+async function publishRelease(){try{
+ const id=selectedControl('releaseBusiness');const b={businessCode:id,platform:$('releasePlatform').value,version:$('releaseVersion').value.trim(),download_url:$('releaseURL').value.trim(),notes:$('releaseNotes').value.trim()};
+ if(!confirm('Notify '+id+' about '+b.platform+' version '+b.version+'? This will NOT install software automatically.'))return;
+ await request('/v1/owner/releases','POST',b);notify('Update notice saved');await loadReleases();
+}catch(e){notify('Release failed: '+e.message)}}
+async function viewSettingsHistory(){try{
+ const id=selectedControl('backupBusiness');const r=await request('/v1/owner/control-history?businessCode='+encodeURIComponent(id));
+ $('settingsHistory').innerHTML=r.history.length?r.history.map(x=>`<div class="item"><div><b>Revision ${x.revision}</b><div class="muted">Saved ${escapeHTML(x.created_at)}</div></div><button class="secondary" onclick="restoreSettingsRevision(${x.revision})">Restore this revision</button></div>`).join(''):'<div class="item">No older settings snapshots yet.</div>';
+ $('backupStatus').textContent='Showing settings history only (not sales/stock data).';
+}catch(e){printError('backupStatus',e)}}
+async function exportSettingsBackup(){try{
+ const id=selectedControl('backupBusiness');const r=await request('/v1/owner/settings-export?businessCode='+encodeURIComponent(id));
+ $('settingsJSON').value=JSON.stringify(r,null,2);$('backupStatus').textContent='Settings JSON ready. Long press and select text to copy. No passwords are included.';
+}catch(e){printError('backupStatus',e)}}
+async function restoreSettingsRevision(revision){try{
+ const id=selectedControl('backupBusiness');if(!confirm('Restore ONLY POS settings for '+id+' to saved revision '+revision+'?'))return;
+ const r=await request('/v1/owner/control-restore','POST',{businessCode:id,restore_revision:revision});
+ $('backupStatus').textContent='Restored into new revision '+r.revision+'. Customer POS will sync updated settings.';await viewSettingsHistory();
+}catch(e){printError('backupStatus',e)}}
+async function loadOwnerReports(){try{
+ const [stats,audit]=await Promise.all([request('/v1/owner/statistics'),request('/v1/owner/control-audit')]);
+ const entries=[['Customers',stats.customers],['Active',stats.active],['Blocked',stats.blocked],['Expiring in 7 days',stats.expiring_7_days],['Pending payments',stats.pending_payments],['Approved payments (LKR)',stats.approved_payment_lkr]];
+ $('ownerStats').innerHTML=entries.map(([label,value])=>`<div class="stat-box"><strong>${escapeHTML(String(value))}</strong><span>${escapeHTML(label)}</span></div>`).join('');
+ $('ownerAudit').innerHTML=audit.actions.length?audit.actions.map(x=>`<div class="item"><div><b>${escapeHTML(x.action)}</b> · ${escapeHTML(x.business_code||'System')}<div class="muted">${escapeHTML(x.created_at)}</div></div></div>`).join(''):'<div class="item">No audit events recorded by the new control system.</div>';
+}catch(e){notify('Reports: '+e.message)}}
+function supportTo(section){const id=$('supportBusiness').value;showOwnerSection(section);const selects={devices:'deviceBusiness',remoteControl:'controlBusiness',updateCenter:'releaseBusiness',settingsBackup:'backupBusiness'};const target=$(selects[section]);if(target&&id)target.value=id}
+
+showOwnerSection('dashboard');
+
+// Customer-named backup center. Existing Owner v2.0 functions preserved.
+let backupLoadedBusiness='',backupConsentExists=false;
+const backupStatus=message=>{const el=document.getElementById('backupCenterStatus');if(el)el.textContent=message};
+async function ownerLoadBackupPolicy(){
+ try{
+  const code=selectedControl('backupBusiness');
+  const r=await request('/v1/owner/backup-policy?businessCode='+encodeURIComponent(code));
+  backupLoadedBusiness=code;backupConsentExists=!!r.policy.consent_recorded_at;
+  $('backupCloudEnabled').checked=!!r.policy.cloud_enabled;
+  $('backupPcEnabled').checked=!!r.policy.pc_enabled;
+  $('backupConsent').checked=backupConsentExists;
+  $('backupConsentNote').textContent=backupConsentExists?'Customer authorization recorded: '+r.policy.consent_recorded_at:'Customer authorization must be recorded when enabling.';
+  backupStatus('Loaded '+code+' · Cloud '+(r.policy.cloud_enabled?'ON':'OFF')+' · PC '+(r.policy.pc_enabled?'ON':'OFF'));
+  await ownerLoadBackupFiles();
+ }catch(e){backupStatus('Load failed: '+e.message)}
+}
+async function ownerSaveBackupPolicy(){
+ try{
+  const code=selectedControl('backupBusiness');
+  if(backupLoadedBusiness!==code)throw Error('Load this customer first');
+  const cloud_enabled=$('backupCloudEnabled').checked,pc_enabled=$('backupPcEnabled').checked;
+  const consent=$('backupConsent').checked;
+  if((cloud_enabled||pc_enabled)&&!backupConsentExists&&!consent)throw Error('Record customer authorization first');
+  if(!confirm(`Save ${code} backup options?\nCloud: ${cloud_enabled?'ON':'OFF'}\nMy PC: ${pc_enabled?'ON':'OFF'}\nOFF does not remove saved backups.`))return;
+  const r=await request('/v1/owner/backup-policy','PUT',{businessCode:code,cloud_enabled,pc_enabled,customer_authorization_confirmed:consent});
+  backupConsentExists=!!r.policy.consent_recorded_at;
+  backupStatus('Saved '+code+' · Cloud '+(r.policy.cloud_enabled?'ON':'OFF')+' · PC '+(r.policy.pc_enabled?'ON':'OFF'));
+ }catch(e){backupStatus('Save failed: '+e.message)}
+}
+async function ownerLoadBackupFiles(){
+ try{
+  const code=selectedControl('backupBusiness');
+  const r=await request('/v1/owner/backup-list?businessCode='+encodeURIComponent(code));
+  const place=$('backupFiles');place.replaceChildren();
+  if(!r.backups.length){place.textContent='No full core-POS backup uploaded yet. Customer app must be updated, online and signed in as Admin.';return}
+  const meta=businessRecords.find(t=>t.id===code);
+  for(const file of r.backups){
+   const row=document.createElement('div');row.className='item';
+   const textNode=document.createElement('div');textNode.textContent=`${meta?.name||code} · ${file.created_at} · ${(file.size_bytes/1024).toFixed(0)} KB`;
+   const button=document.createElement('button');button.className='secondary';button.textContent='Download';
+   button.onclick=()=>ownerManualBackupDownload(code,meta?.name||code,file.id,file.created_at);
+   row.append(textNode,button);place.appendChild(row);
+  }
+ }catch(e){backupStatus('Backup list failed: '+e.message)}
+}
+function backupSafeName(s){return String(s||'Business').replace(/[<>:"/\\|?*\u0000-\u001F]/g,'_').replace(/\s+/g,'_').replace(/[. ]+$/g,'').slice(0,75)||'Business'}
+async function ownerManualBackupDownload(code,name,id,created){
+ try{
+  const base=$('api').value.trim().replace(/\/$/,'');
+  const res=await fetch(base+'/v1/owner/backup-download?backupId='+encodeURIComponent(id),{headers:{Authorization:'Bearer '+token}});
+  if(!res.ok){const r=await res.json().catch(()=>({}));throw Error(r.error||('HTTP '+res.status))}
+  const blob=await res.blob();const url=URL.createObjectURL(blob);
+  const date=String(created).replace(/[:.]/g,'-');const a=document.createElement('a');
+  a.href=url;a.download=`${backupSafeName(name)}__${code}__${date}__${id.slice(0,8)}.json`;
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+  backupStatus('Browser download requested. PC Auto Download is separate.');
+ }catch(e){backupStatus('Download error: '+e.message)}
+}
+async function ownerRotateBackupAgentKey(){
+ if(!confirm('Create a NEW PC agent token? Any previous PC agent token will stop working.'))return;
+ try{
+  const r=await request('/v1/owner/backup-agent-key','POST',{});
+  $('backupAgentKey').value=r.agent_token;
+  backupStatus('New PC read-only agent token created. Copy it into PC setup; this token is shown only once.');
+ }catch(e){backupStatus('Token error: '+e.message)}
+}
+async function ownerRevokeBackupAgentKey(){
+ if(!confirm('Revoke PC agent token now? Automatic PC downloads will stop.'))return;
+ try{await request('/v1/owner/backup-agent-key','DELETE',{});$('backupAgentKey').value='';backupStatus('PC backup agent access revoked.')}catch(e){backupStatus(e.message)}
+}
+function ownerCopyBackupAgentKey(){const text=$('backupAgentKey').value;if(!text)return backupStatus('Generate a token first');if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>backupStatus('Token copied. Paste only in trusted PC setup.')).catch(()=>backupStatus('Select and copy token manually.'));else{$('backupAgentKey').select();backupStatus('Selected token; copy manually.')}}
+
+</script><script src="ns_job_roles_owner.js">
+// Developer-only business login artwork; never expose these controls in Customer POS.
+let ownerLoginArtData='',ownerLoginArtBusiness='';
+function ownerLoginArtMsg(t){const e=document.getElementById('ownerLoginArtStatus');if(e)e.textContent=t}
+function ownerLoginArtPreview(){const e=document.getElementById('ownerLoginArtPreview');if(e){e.src=ownerLoginArtData||'';e.style.display=ownerLoginArtData?'block':'none'}}
+function ownerLoginArtReset(){ownerLoginArtData='';ownerLoginArtBusiness='';ownerLoginArtPreview();ownerLoginArtMsg('Choose a business and load its saved photo.')}
+async function ownerLoginArtFileChanged(input){
+ const f=input.files?.[0];input.value='';if(!f)return;
+ if(!['image/jpeg','image/png','image/webp'].includes(f.type)||f.size>5*1024*1024){ownerLoginArtMsg('Choose a JPG/PNG/WebP under 5MB');return}
+ try{
+  const bitmap=await createImageBitmap(f),maxW=1350,maxH=900,scale=Math.min(1,maxW/bitmap.width,maxH/bitmap.height);
+  const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+  canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+  let img='';for(const q of [0.78,0.60,0.43,0.32]){img=canvas.toDataURL('image/jpeg',q);if(img.length<=260000)break}
+  if(img.length>260000)throw Error('Photo is too large after compression. Use a smaller image.');
+  ownerLoginArtData=img;ownerLoginArtBusiness=document.getElementById('brBusiness').value;
+  if(!ownerLoginArtBusiness)throw Error('First choose a customer business in Branding');
+  ownerLoginArtPreview();ownerLoginArtMsg('Photo ready. Press Publish to save to cloud.');
+ }catch(e){ownerLoginArtMsg('Photo error: '+e.message)}
+}
+async function loadOwnerLoginArt(){
+ const code=document.getElementById('brBusiness').value;if(!code){ownerLoginArtMsg('Choose a business first.');return}
+ try{const r=await request('/v1/owner/login-art?businessCode='+encodeURIComponent(code));ownerLoginArtBusiness=code;ownerLoginArtData=r.imageData||'';ownerLoginArtPreview();ownerLoginArtMsg(r.imageData?'Saved photo loaded for '+code:'No custom photo saved for '+code+' (default photo in use).')}
+ catch(e){ownerLoginArtMsg('Load failed: '+e.message)}
+}
+async function publishOwnerLoginArt(){
+ const code=document.getElementById('brBusiness').value;
+ if(!code||ownerLoginArtBusiness!==code){ownerLoginArtMsg('Select a business and load/choose its photo first.');return}
+ if(!ownerLoginArtData){ownerLoginArtMsg('Choose a photo or use Restore Default.');return}
+ try{const r=await request('/v1/owner/login-art','POST',{businessCode:code,imageData:ownerLoginArtData});ownerLoginArtMsg(r.ok?'✓ Saved for '+code+'. Windows POS will sync on next successful cloud validation.':'Publish not confirmed');}
+ catch(e){ownerLoginArtMsg('Publish failed: '+e.message)}
+}
+async function removeOwnerLoginArt(){
+ const code=document.getElementById('brBusiness').value;if(!code)return ownerLoginArtMsg('Choose a business first');
+ if(!confirm('Restore default Login Screen photo for '+code+'?'))return;
+ try{await request('/v1/owner/login-art','POST',{businessCode:code,imageData:''});ownerLoginArtData='';ownerLoginArtBusiness=code;ownerLoginArtPreview();ownerLoginArtMsg('✓ Default photo restored for '+code+'.');}
+ catch(e){ownerLoginArtMsg('Restore failed: '+e.message)}
+}
+document.getElementById('brBusiness')?.addEventListener('change',ownerLoginArtReset);
+
+</script>
+<style>
+#ownerConfirmBackdrop{position:fixed;inset:0;background:#07142ad9;z-index:10000;display:none;place-items:center;padding:20px}
+#ownerConfirmBackdrop.visible{display:grid}
+.owner-confirm-card{width:min(480px,100%);background:white;color:#11294d;border-radius:20px;padding:26px;box-shadow:0 20px 80px #0008}
+.owner-confirm-card h2{margin:0 0 12px;color:#ae233d}.owner-confirm-card p{line-height:1.6;white-space:pre-line}
+.owner-confirm-card input{width:100%;padding:13px;border:1px solid #bacbe6;border-radius:10px;color:#102d54;margin:10px 0 18px}
+.owner-confirm-actions{display:flex;justify-content:flex-end;gap:10px}.owner-confirm-actions button{padding:12px 20px;border-radius:10px}
+#ownerLaunchSplash{position:fixed;inset:0;z-index:10001;background:#041431;display:none;align-items:center;justify-content:center}
+#ownerLaunchSplash.visible{display:flex}
+#ownerLaunchSplash img{width:100%;height:100%;object-fit:contain}
+#ownerLaunchSplash button{position:absolute;right:6%;bottom:17%;width:40%;height:17%;opacity:0;cursor:pointer}
+#ownerLaunchSplash .splashHint{position:absolute;bottom:12px;left:0;right:0;color:white;text-align:center;font-size:12px;text-shadow:0 1px 4px #000}
+@media(max-width:700px){#ownerLaunchSplash button{right:5%;bottom:20%;width:48%;height:18%}}
+</style>
+<div id="ownerConfirmBackdrop" role="dialog" aria-modal="true" aria-labelledby="ownerConfirmTitle"><div class="owner-confirm-card">
+<h2 id="ownerConfirmTitle">Confirm permanent deletion</h2><p id="ownerConfirmMessage"></p><label id="ownerConfirmLabel" for="ownerConfirmInput"></label><input id="ownerConfirmInput" autocomplete="off" spellcheck="false"/>
+<div class="owner-confirm-actions"><button type="button" class="secondary" id="ownerConfirmCancel">Cancel</button><button type="button" class="reject" id="ownerConfirmAccept" disabled>Delete permanently</button></div></div></div>
+<div id="ownerLaunchSplash" aria-label="NS POS PRO Developer Owner welcome screen"><img src="owner_launch_splash.jpg" alt="NS POS PRO Developer Owner"/><button type="button" id="ownerSplashOpen" aria-label="Developer Owner Access"></button><span class="splashHint">Select Developer Owner Access to sign in</span></div>
+<script>
+function ownerDeleteConfirmation(message,expected){return new Promise(resolve=>{
+ const bg=document.getElementById('ownerConfirmBackdrop'), inp=document.getElementById('ownerConfirmInput'), accept=document.getElementById('ownerConfirmAccept'),cancel=document.getElementById('ownerConfirmCancel');
+ document.getElementById('ownerConfirmMessage').textContent=message;
+ document.getElementById('ownerConfirmLabel').textContent='Type exactly: '+expected;
+ bg.classList.add('visible');inp.value='';accept.disabled=true;inp.focus();
+ const cleanup=(result)=>{bg.classList.remove('visible');inp.removeEventListener('input',check);accept.removeEventListener('click',yes);cancel.removeEventListener('click',no);inp.removeEventListener('keydown',key);resolve(result)};
+ const check=()=>{accept.disabled=inp.value!==expected};const yes=()=>cleanup(true);const no=()=>cleanup(false);
+ const key=e=>{if(e.key==='Escape')no();else if(e.key==='Enter'&&inp.value===expected)yes()};
+ inp.addEventListener('input',check);accept.addEventListener('click',yes);cancel.addEventListener('click',no);inp.addEventListener('keydown',key);
+ });}
+window.addEventListener('DOMContentLoaded',()=>{const splash=document.getElementById('ownerLaunchSplash');if(splash){splash.classList.add('visible');document.getElementById('ownerSplashOpen').addEventListener('click',()=>splash.classList.remove('visible'));}});
+</script>
+</body></html>

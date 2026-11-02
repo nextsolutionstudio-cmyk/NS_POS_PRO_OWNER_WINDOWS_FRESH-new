@@ -1,0 +1,45 @@
+name: Build Owner Windows EXE
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify Windows project
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'package.json')) { throw 'Missing package.json at repository root' }
+          if (-not (Test-Path 'desktop/main.cjs')) { throw 'Missing desktop/main.cjs' }
+          if (-not (Test-Path 'app/index.html')) { throw 'Missing app/index.html' }
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build Windows EXE
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+        run: npm run dist:win -- --publish never
+
+      - name: Upload Windows EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: NS-POS-PRO-Owner-Windows
+          path: dist/*.exe
+          if-no-files-found: error
+          retention-days: 14

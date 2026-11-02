@@ -1,0 +1,75 @@
+name: NS POS PRO - Build Owner Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  build-owner-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+
+      - name: Gradle 8.10.2
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.10.2'
+
+      - name: Install Android SDK 35
+        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+
+      - name: Locate Owner Android source (ZIP or folders)
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ ! -f app/build.gradle && ! -f NS_Developer_Owner/app/build.gradle && ! -f Owner/NS_Developer_Owner/app/build.gradle ]]; then
+            shopt -s nullglob
+            source_zips=( *Owner*Android*.zip *Owner*SOURCE*.zip *OWNER*Source*.zip )
+            if [[ ${#source_zips[@]} -gt 0 ]]; then
+              echo "Extracting source ZIP: ${source_zips[0]}"
+              mkdir -p .ns_owner_source
+              unzip -q "${source_zips[0]}" -d .ns_owner_source
+            fi
+          fi
+          for dir in '.' 'NS_Developer_Owner' 'Owner/NS_Developer_Owner' '.ns_owner_source/Owner/NS_Developer_Owner' '.ns_owner_source/NS_Developer_Owner'; do
+            if [[ -f "$dir/settings.gradle" && -f "$dir/app/build.gradle" ]]; then
+              echo "Found Android project: $dir"
+              echo "project_dir=$dir" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          done
+          echo 'Owner Android source not found. Upload extracted project files or original Owner Source ZIP.' >&2
+          exit 1
+
+      - name: Build debug APK
+        env:
+          PROJECT_DIR: ${{ steps.source.outputs.project_dir }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gradle --no-daemon --stacktrace -p "$PROJECT_DIR" :app:assembleDebug
+
+      - name: Upload Owner APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: NS_POS_PRO_Developer_Owner_Debug_APK
+          path: '**/app/build/outputs/apk/debug/*.apk'
+          if-no-files-found: error

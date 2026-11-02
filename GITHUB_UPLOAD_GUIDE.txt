@@ -1,0 +1,9 @@
+NS POS PRO OWNER - GitHub Actions upload guide
+
+1. Extract this ZIP (do not upload the ZIP file as a single file to GitHub).
+2. Upload the extracted repository-root contents including .github directory.
+3. Verify Code tab shows package.json, app/, desktop/, and .github/workflows/build-windows-exe.yml.
+4. Open Actions > Build NS POS PRO Owner Windows EXE > Run workflow > main > Run workflow.
+5. After successful build download artifact NS-POS-PRO-Owner-Windows-EXE, extract and use the Setup EXE or Portable EXE.
+6. owner_android/ is optional reference source; it is not used for Windows build.
+7. Do not permanently delete live accounts during tests; back up Cloudflare database first.

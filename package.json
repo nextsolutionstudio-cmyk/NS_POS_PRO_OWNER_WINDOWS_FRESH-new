@@ -1,0 +1,52 @@
+{
+  "name": "ns-pos-pro-owner-windows",
+  "version": "2.2.5",
+  "description": "NS POS PRO Developer Owner Windows control panel",
+  "private": true,
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis portable --x64"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "lk.nextsolutionstudio.nspospro.owner",
+    "productName": "NS POS PRO Developer Owner",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "app/**/*",
+      "desktop/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "app/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "NS-POS-PRO-Owner-Windows-Setup-${version}-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "NS-POS-PRO-Owner-Windows-Portable-${version}-${arch}.${ext}"
+    }
+  }
+}

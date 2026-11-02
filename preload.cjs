@@ -1,0 +1,1 @@
+'use strict';const {contextBridge,ipcRenderer}=require('electron');contextBridge.exposeInMainWorld('OwnerNative',Object.freeze({savePaymentsJson:data=>ipcRenderer.invoke('owner:save-json',String(data))}));
